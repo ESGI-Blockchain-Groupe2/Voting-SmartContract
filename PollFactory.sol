@@ -1,23 +1,31 @@
 pragma solidity >=0.5.0 <0.6.0;
 
-contract PollFactory {
-    function PollFactory(){}
+contract ElectionFactory {
+    function ElectionFactory(){}
 
-    struct Poll {
-        string title;
-        string[] choices;
-        int voterCount;
+    struct Election {
+        string titre;
+        Choix[] choix;
+        uint totalVoters;
+        bool isOpen;
+        date creationDate;
+        date expiresAfter;
     }
 
-    Poll[] public polls;
+    struct Choix {
+        string titre;
+        uint nbVoters;
+    }
 
-    mapping (uint => address) pollToOwner;
-    mapping (address => uint) ownerPollCount;
+    Election[] public elections;
 
-    function _createPoll(string _title, string[] _choices) internal {
-        uint id = polls.push(Poll(_title, _choices, 0)) - 1;
-        pollToOwner[id] = msg.sender;
-        ownerPollCount[msg.sender] ++;
-        emit newPoll(id);
+    mapping (uint => address) electionToOwner;
+    mapping (address => uint) ownerElectionCount;
+
+    function _createElection(string _title, string[] _choices) internal {
+        uint id = elections.push(Election(_title, _choices, 0)) - 1;
+        electionToOwner[id] = msg.sender;
+        ownerElectionCount[msg.sender] ++;
+        emit newElection(id);
     }
 }
