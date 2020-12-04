@@ -4,16 +4,21 @@ contract ElectionFactory {
 
     struct Election {
         string titre;
-        Choix[] choix;
+        Candidat[] candidats;
         uint totalVoters;
         bool isOpen;
         date creationDate;
         date expiresAfter;
     }
 
-    struct Choix {
-        string titre;
-        uint nbVoters;
+    struct Candidat {
+        address id;
+        string name;
+    }
+
+    struct Mention {
+        string name;
+        uint value;
     }
 
     Election[] public elections;
