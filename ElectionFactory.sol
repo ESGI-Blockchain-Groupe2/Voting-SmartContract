@@ -1,6 +1,6 @@
 pragma solidity >=0.5.0 <0.6.0;
 
-contract ElectionFactory {
+contract ElectionFactory is Ownable {
     function ElectionFactory(){}
 
     struct Election {
@@ -14,7 +14,7 @@ contract ElectionFactory {
 
     struct Choix {
         string titre;
-        uint nbVoters;
+        uint[] notes; // notes de 0 à 6
     }
 
     Election[] public elections;
@@ -27,5 +27,9 @@ contract ElectionFactory {
         electionToOwner[id] = msg.sender;
         ownerElectionCount[msg.sender] ++;
         emit newElection(id);
+    }
+
+    function _closeElection(uint id) external only {
+
     }
 }
