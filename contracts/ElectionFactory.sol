@@ -11,7 +11,8 @@ contract ElectionFactory is Ownable {
 
     struct Election {
         string title;
-        Candidate[] candidats;
+        //mapping (uint => Candidate) candidates;
+        Candidate[] candidates;
         uint totalVoters;
         bool isOpen;
         uint256 creationDate;
@@ -30,7 +31,7 @@ contract ElectionFactory is Ownable {
         bool isAdmin;
     }
 
-    Election[] public elections;
+    Election[] elections;
     User[] users;
 
     mapping (uint => address) electionToOwner;
@@ -52,16 +53,19 @@ contract ElectionFactory is Ownable {
 
     // TODO : function addUser
 
-    function _createElection(string memory _title, string[] memory _candidatesNames) external isAdmin(msg.sender)  {
+    Election[] election;
+    function _createElection(string calldata _title, string[] calldata _candidatesNames) external isAdmin(msg.sender)  {
         uint nbCandidates = _candidatesNames.length;
 
-        Candidate[] memory candidates = new Candidate[](nbCandidates);
-        for (uint i = 0; i < nbCandidates; i ++) {
-            candidates[i] = Candidate({id: i, name: _candidatesNames[i], notes: new uint[](0)});
-        }
-
-        elections.push(Election(_title, candidates, 0, true, block.timestamp, expiration));
+        election = Election(_title, new Candidate[](nbCandidates), 0, true, block.timestamp, expiration);
+        //election.push(newElection);
+        elections.push(election);
         uint electionId = elections.length - 1;
+        /*Candidate[] storage candidates;*/
+
+        for (uint i = 0; i < nbCandidates; i ++) {
+            elections[electionId].candidates[i] = Candidate({id: i, name: _candidatesNames[i], notes: new uint[](0)});
+        }
 
         electionToOwner[electionId] = msg.sender;
         ownerElectionCount[msg.sender] += 1;
