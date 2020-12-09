@@ -1,57 +1,71 @@
 pragma solidity ^0.7.0;
+pragma experimental ABIEncoderV2;
 
 import "./ownable.sol";
 
 contract ElectionFactory is Ownable {
     constructor (){}
-    uint expiration = 15 days;
+    uint32 expiration = 15 days;
 
     event NewElection(uint id);
 
     struct Election {
         string title;
-        Candidat[] candidats;
+        Candidate[] candidats;
         uint totalVoters;
         bool isOpen;
-        uint32 creationDate;
+        uint256 creationDate;
         uint32 expiresAfter;
     }
 
-    struct Candidat {
-        address id;
+    struct Candidate {
+        //address id;
+        uint id; // TODO : Utiliser l'index du tableau candidats[] ?
         string name;
         uint[] notes; // notes from 0 to 6
     }
 
     struct User {
-        uint userId;
+        address userAddress;
         bool isAdmin;
     }
 
     Election[] public elections;
+    User[] users;
 
     mapping (uint => address) electionToOwner;
     mapping (address => uint) ownerElectionCount;
     mapping (address => User) listUser;
 
-    modifier isAdmin(uint userId){
-        require (listUser[userId].isAdmin == true);
+    modifier isAdmin(address userAddress){
+        require (listUser[userAddress].isAdmin == true);
         _;
     }
 
-    function _addAdmin(uint userId) private isAdmin(msg.sender) {
-        listUser[userId].isAdmin = true;
+    function _addAdmin(address userAddress) private isAdmin(msg.sender) {
+        listUser[userAddress].isAdmin = true;
     }
 
-    function _deleteAdmin(uint userId) private isAdmin(msg.sender) {
-        listUser[userId].isAdmin = false;
+    function _deleteAdmin(address userAddress) private isAdmin(msg.sender) {
+        listUser[userAddress].isAdmin = false;
     }
 
-    function _createElection(string memory _title, string[] _candidates) external isAdmin(msg.sender)  {
-        uint id = elections.push(Election(_title, _candidates, 0, true, now, expiration)) - 1;
-        electionToOwner[id] = msg.sender;
-        ownerElectionCount[msg.sender] ++;
-        emit NewElection(id);
+    // TODO : function addUser
+
+    function _createElection(string memory _title, string[] memory _candidatesNames) external isAdmin(msg.sender)  {
+        uint nbCandidates = _candidatesNames.length;
+
+        Candidate[] memory candidates = new Candidate[](nbCandidates);
+        for (uint i = 0; i < nbCandidates; i ++) {
+            candidates[i] = Candidate({id: i, name: _candidatesNames[i], notes: new uint[](0)});
+        }
+
+        elections.push(Election(_title, candidates, 0, true, block.timestamp, expiration));
+        uint electionId = elections.length - 1;
+
+        electionToOwner[electionId] = msg.sender;
+        ownerElectionCount[msg.sender] += 1;
+        emit NewElection(electionId);
     }
 
 
