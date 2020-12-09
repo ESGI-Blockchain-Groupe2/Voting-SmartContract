@@ -1,8 +1,8 @@
-pragma solidity ^0.4.0;
+pragma solidity ^0.7.0;
 import "./ElectionFactory.sol";
 
-contract ElectionHelper /*is ElectionVoting ou VoteCreation*/ {
-    function ElectionHelper() {}
+contract ElectionHelper is ElectionFactory {
+    constructor() {}
 
     function changeTitle(uint _electionId, string calldata _newTitle) external /*onlyAdmin*/ {
         elections[_electionId].title = _newTitle;

@@ -3,16 +3,18 @@ pragma solidity ^0.7.0;
 import "./ownable.sol";
 
 contract ElectionFactory is Ownable {
-    function ElectionFactory(){}
+    constructor (){}
     uint expiration = 15 days;
+
+    event NewElection(uint id);
 
     struct Election {
         string title;
         Candidat[] candidats;
         uint totalVoters;
         bool isOpen;
-        date creationDate;
-        date expiresAfter;
+        uint32 creationDate;
+        uint32 expiresAfter;
     }
 
     struct Candidat {
@@ -24,6 +26,7 @@ contract ElectionFactory is Ownable {
     struct User {
         uint userId;
         bool isAdmin;
+    }
 
     Election[] public elections;
 
@@ -36,19 +39,19 @@ contract ElectionFactory is Ownable {
         _;
     }
 
-    function _addAdmin(uint userId) isAdmin(msg.sender) {
-        listUser[userId].isAdmin = true
+    function _addAdmin(uint userId) private isAdmin(msg.sender) {
+        listUser[userId].isAdmin = true;
     }
 
-    function _deleteAdmin(uint userId) isAdmin(msg.sender) {
-        listUser[userId].isAdmin = false
+    function _deleteAdmin(uint userId) private isAdmin(msg.sender) {
+        listUser[userId].isAdmin = false;
     }
 
-    function _createElection(string _title, string[] _candidates) external isAdmin(msg.sender)  {
+    function _createElection(string memory _title, string[] _candidates) external isAdmin(msg.sender)  {
         uint id = elections.push(Election(_title, _candidates, 0, true, now, expiration)) - 1;
         electionToOwner[id] = msg.sender;
         ownerElectionCount[msg.sender] ++;
-        emit newElection(id);
+        emit NewElection(id);
     }
 
 

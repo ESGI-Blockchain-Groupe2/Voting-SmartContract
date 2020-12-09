@@ -2,7 +2,7 @@ pragma solidity ^0.7.0;
 
 import './ElectionFactory.sol';
 
-contract VoteFactory {
+contract VoteFactory is ElectionFactory {
 
     Election public election;
 
@@ -11,7 +11,6 @@ contract VoteFactory {
 
     struct Vote {
         address id;
-        mapping (address => Mention) mentionsByCandidate;
     }
 
 }
