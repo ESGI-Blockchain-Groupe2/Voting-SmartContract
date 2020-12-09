@@ -8,21 +8,22 @@ contract ElectionFactory is Ownable {
 
     struct Election {
         string title;
-        Choice[] choices;
+        Candidat[] candidats;
         uint totalVoters;
         bool isOpen;
         date creationDate;
         date expiresAfter;
     }
 
+    struct Candidat {
+        address id;
+        string name;
+        uint[] notes; // notes from 0 to 6
+    }
+
     struct User {
         uint userId;
         bool isAdmin;
-
-    struct Choice {
-        string title;
-        uint[] notes; // notes from 0 to 6
-    }
 
     Election[] public elections;
 
@@ -43,8 +44,8 @@ contract ElectionFactory is Ownable {
         listUser[userId].isAdmin = false
     }
 
-    function _createElection(string _title, string[] _choices) external isAdmin(msg.sender)  {
-        uint id = elections.push(Election(_title, _choices, 0, true, now, expiration)) - 1;
+    function _createElection(string _title, string[] _candidates) external isAdmin(msg.sender)  {
+        uint id = elections.push(Election(_title, _candidates, 0, true, now, expiration)) - 1;
         electionToOwner[id] = msg.sender;
         ownerElectionCount[msg.sender] ++;
         emit newElection(id);
