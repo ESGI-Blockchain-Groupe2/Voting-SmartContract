@@ -28,8 +28,22 @@ contract ElectionFactory is Ownable {
 
     mapping (uint => address) electionToOwner;
     mapping (address => uint) ownerElectionCount;
+    mapping (address => User) listUser;
 
-    function _createElection(string _title, string[] _choices) external /*onlyAdmin*/ {
+    modifier isAdmin(uint userId){
+        require (listUser[userId].isAdmin == true);
+        _;
+    }
+
+    function _addAdmin(uint userId) isAdmin(msg.sender) {
+        listUser[userId].isAdmin = true
+    }
+
+    function _deleteAdmin(uint userId) isAdmin(msg.sender) {
+        listUser[userId].isAdmin = false
+    }
+
+    function _createElection(string _title, string[] _choices) external isAdmin(msg.sender)  {
         uint id = elections.push(Election(_title, _choices, 0, true, now, expiration)) - 1;
         electionToOwner[id] = msg.sender;
         ownerElectionCount[msg.sender] ++;
@@ -37,21 +51,7 @@ contract ElectionFactory is Ownable {
     }
 
 
-    mapping (address => User) listUser;
-
-    modifier isAdmin(uint userId){
-        require (userId);
-        _;
-    }
-
-    function _addAdmin(uint userId) isAdmin(_userId) {
-        listUser[userId].isAdmin = true
-    }
-
-    function _deleteAdmin(uint userId) isAdmin(_userId) {
-        listUser[userId].isAdmin = false
-
-    function _closeElection(uint id) external /*onlyAdmin isOpen(id)*/ {
+    function _closeElection(uint id) external isAdmin(msg.sender) /* isOpen(id)*/ {
         elections[id].isOpen = false;
     }
 
