@@ -15,6 +15,12 @@ contract ElectionFactory {
     struct Choix {
         string titre;
         uint nbVoters;
+        
+    }
+
+    struct User {
+        uint userId;
+        bool isAdmin;
     }
 
     Election[] public elections;
@@ -27,5 +33,20 @@ contract ElectionFactory {
         electionToOwner[id] = msg.sender;
         ownerElectionCount[msg.sender] ++;
         emit newElection(id);
+    }
+
+    mapping (address => User) listUser;
+
+    modifier isAdmin(uint userId){
+        require (userId);
+        _;
+    }
+
+    function _addAdmin(uint userId) isAdmin(_userId) {
+        listUser[userId].isAdmin = true
+    }
+
+    function _deleteAdmin(uint userId) isAdmin(_userId) {
+        listUser[userId].isAdmin = false
     }
 }
