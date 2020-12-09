@@ -8,7 +8,6 @@ contract ElectionFactory is Ownable {
 
     struct Election {
         string title;
-        Choice[] choices;
         Candidat[] candidats;
         uint totalVoters;
         bool isOpen;
