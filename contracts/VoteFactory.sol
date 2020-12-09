@@ -5,7 +5,7 @@ import './ElectionFactory.sol';
 
 contract VoteFactory is ElectionFactory {
 
-    Election public election;
+    //Election public election;
 
     mapping (uint => address) voteToOwner;
     mapping (uint => uint) voteToElection;

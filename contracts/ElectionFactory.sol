@@ -11,7 +11,13 @@ contract ElectionFactory is Ownable {
 
     struct Election {
         string title;
-        Candidate[] candidats;
+        /*
+            TODO : Test and see if candidates are added without a mapping,
+             else uncomment the two parameters below and _addCandidates
+        */
+        //mapping (uint => Candidate) candidates;
+        //uint candidatesSize;
+        Candidate[] candidates;
         uint totalVoters;
         bool isOpen;
         uint256 creationDate;
@@ -19,7 +25,6 @@ contract ElectionFactory is Ownable {
     }
 
     struct Candidate {
-        //address id;
         uint id; // TODO : Utiliser l'index du tableau candidats[] ?
         string name;
         uint[] notes; // notes from 0 to 6
@@ -30,7 +35,9 @@ contract ElectionFactory is Ownable {
         bool isAdmin;
     }
 
-    Election[] public elections;
+    mapping (uint => Election) elections;
+    uint electionsSize = 0;
+
     User[] users;
 
     mapping (uint => address) electionToOwner;
@@ -52,21 +59,43 @@ contract ElectionFactory is Ownable {
 
     // TODO : function addUser
 
-    function _createElection(string memory _title, string[] memory _candidatesNames) external isAdmin(msg.sender)  {
+    function _createElection(string calldata _title, string[] calldata _candidatesNames) external isAdmin(msg.sender)  {
         uint nbCandidates = _candidatesNames.length;
 
-        Candidate[] memory candidates = new Candidate[](nbCandidates);
-        for (uint i = 0; i < nbCandidates; i ++) {
-            candidates[i] = Candidate({id: i, name: _candidatesNames[i], notes: new uint[](0)});
-        }
+        Election storage election = elections[electionsSize];
+        uint electionId = electionsSize;
 
-        elections.push(Election(_title, candidates, 0, true, block.timestamp, expiration));
-        uint electionId = elections.length - 1;
+        election.title = _title;
+        election.totalVoters = 0;
+        election.isOpen = true;
+        election.creationDate = block.timestamp;
+        election.expiresAfter = expiration;
+
+        //_addCandidates(electionId, nbCandidates, _candidatesNames);
+        for (uint i = 0; i < nbCandidates; i ++) {
+            election.candidates[election.candidates.length] = Candidate(i, _candidatesNames[i], new uint[](0));
+        }
+        electionsSize +=1 ;
 
         electionToOwner[electionId] = msg.sender;
         ownerElectionCount[msg.sender] += 1;
         emit NewElection(electionId);
     }
+
+    /*
+       TODO : Test and see if candidates are added without a mapping,
+        else uncomment this and the two mapping
+    */
+    /*function _addCandidates(uint electionId, uint nbCandidates, string[] calldata _candidatesNames) internal {
+        Election storage e = elections[electionId];
+
+        for (uint i = 0; i < nbCandidates; i ++) {
+            //elections[electionId].candidates[i] = Candidate({id: i, name: _candidatesNames[i], notes: new uint[](0)});
+            e.candidates[e.candidatesSize] = Candidate(i, _candidatesNames[i], new uint[](0));
+        }
+
+        e.candidatesSize++;
+    }*/
 
 
     function _closeElection(uint id) external isAdmin(msg.sender) /* isOpen(id)*/ {

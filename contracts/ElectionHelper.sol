@@ -11,6 +11,6 @@ contract ElectionHelper is ElectionFactory {
     }
 
     function changeCandidateName(uint _electionId, uint _candidateId, string calldata _newName) external isAdmin(msg.sender) {
-        elections[_electionId].candidats[_candidateId].name = _newName;
+        elections[_electionId].candidates[_candidateId].name = _newName;
     }
 }
