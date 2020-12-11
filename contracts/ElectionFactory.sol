@@ -35,9 +35,9 @@ contract ElectionFactory is Ownable {
         bool isAdmin;
     }
 
-    mapping (uint => Election) elections;
-    uint electionsSize = 0;
-
+    /*mapping (uint => Election) elections;
+    uint electionsSize = 0;*/
+    Election[] elections;
     User[] users;
 
     mapping (uint => address) electionToOwner;
@@ -61,9 +61,8 @@ contract ElectionFactory is Ownable {
 
     function _createElection(string calldata _title, string[] calldata _candidatesNames) external isAdmin(msg.sender)  {
         uint nbCandidates = _candidatesNames.length;
-
-        Election storage election = elections[electionsSize];
-        uint electionId = electionsSize;
+        Election storage election = elections[elections.length];
+        uint electionId = elections.length;
 
         election.title = _title;
         election.totalVoters = 0;
@@ -75,7 +74,6 @@ contract ElectionFactory is Ownable {
         for (uint i = 0; i < nbCandidates; i ++) {
             election.candidates[election.candidates.length] = Candidate(i, _candidatesNames[i], new uint[](0));
         }
-        electionsSize +=1 ;
 
         electionToOwner[electionId] = msg.sender;
         ownerElectionCount[msg.sender] += 1;
@@ -84,7 +82,7 @@ contract ElectionFactory is Ownable {
 
     /*
        TODO : Test and see if candidates are added without a mapping,
-        else uncomment this and the two mapping
+        else uncomment this and the two commented parameters in struct
     */
     /*function _addCandidates(uint electionId, uint nbCandidates, string[] calldata _candidatesNames) internal {
         Election storage e = elections[electionId];
