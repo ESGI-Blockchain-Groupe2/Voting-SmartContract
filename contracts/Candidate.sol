@@ -1,4 +1,4 @@
-pragma solidity ^0.7.0;
+pragma solidity ^0.8.0;
 
 contract Candidate {
     string public name;
@@ -10,5 +10,9 @@ contract Candidate {
 
     function setName(string memory _name) public {
         name = _name;
+    }
+
+    function addNotes(uint note) public {
+        notes.push(note);
     }
 }
