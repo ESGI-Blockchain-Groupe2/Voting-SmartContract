@@ -1,8 +1,9 @@
-pragma solidity ^0.7.0;
+pragma solidity ^0.8.0;
 pragma experimental ABIEncoderV2;
 
 import "./ownable.sol";
 import "./Election.sol";
+import "./VoteFactory.sol";
 
 contract ElectionFactory is Ownable {
     constructor (){}
