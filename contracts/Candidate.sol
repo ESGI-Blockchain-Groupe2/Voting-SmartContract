@@ -30,7 +30,7 @@ contract Candidate {
 
     function computeAverageNote(uint totalVoters) public {
         for (uint i = choiceCount; i > 0 && percent <= 50; i++){
-            percent = percent + (notes[i] / totalVoters);
+            percent = percent + ((notes[i] / totalVoters) * 100);
             if(percent >= 50){
                 averageNote = i;
             }
