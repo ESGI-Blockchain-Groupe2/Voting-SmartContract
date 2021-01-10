@@ -1,34 +1,15 @@
-pragma solidity ^0.7.0;
+pragma solidity ^0.8.0;
 pragma experimental ABIEncoderV2;
 
 import "./ownable.sol";
+import "./Election.sol";
+import "./VoteFactory.sol";
 
 contract ElectionFactory is Ownable {
     constructor (){}
     uint32 expiration = 15 days;
 
     event NewElection(uint id);
-
-    struct Election {
-        string title;
-        /*
-            TODO : Test and see if candidates are added without a mapping,
-             else uncomment the two parameters below and _addCandidates
-        */
-        //mapping (uint => Candidate) candidates;
-        //uint candidatesSize;
-        Candidate[] candidates;
-        uint totalVoters;
-        bool isOpen;
-        uint256 creationDate;
-        uint32 expiresAfter;
-    }
-
-    struct Candidate {
-        uint id; // TODO : Utiliser l'index du tableau candidats[] ?
-        string name;
-        uint[] notes; // notes from 0 to 6
-    }
 
     struct User {
         address userAddress;
@@ -61,24 +42,25 @@ contract ElectionFactory is Ownable {
 
     function _createElection(string calldata _title, string[] calldata _candidatesNames) external isAdmin(msg.sender)  {
         uint nbCandidates = _candidatesNames.length;
-        Election storage election = elections[elections.length];
-        uint electionId = elections.length;
-
-        election.title = _title;
-        election.totalVoters = 0;
-        election.isOpen = true;
-        election.creationDate = block.timestamp;
-        election.expiresAfter = expiration;
+        
+        Election election = new Election(_title, block.timestamp, expiration);
+        uint electionId = electionsSize;
 
         //_addCandidates(electionId, nbCandidates, _candidatesNames);
-        for (uint i = 0; i < nbCandidates; i ++) {
-            election.candidates[election.candidates.length] = Candidate(i, _candidatesNames[i], new uint[](0));
+        for (uint i = 0; i < nbCandidates; i++) {
+            election.addCandidate(_candidatesNames[i]);
         }
 
         electionToOwner[electionId] = msg.sender;
         ownerElectionCount[msg.sender] += 1;
         emit NewElection(electionId);
     }
+
+    function _endElection(uint id) external{
+        elections[id].closeElection();
+        elections[id].computeResult();
+    }
+
 
     /*
        TODO : Test and see if candidates are added without a mapping,
@@ -97,7 +79,7 @@ contract ElectionFactory is Ownable {
 
 
     function _closeElection(uint id) external isAdmin(msg.sender) /* isOpen(id)*/ {
-        elections[id].isOpen = false;
+        elections[id].closeElection();
     }
 
     function seeElection(uint id) external view {
