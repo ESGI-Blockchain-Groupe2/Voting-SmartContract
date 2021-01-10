@@ -47,7 +47,7 @@ contract ElectionFactory is Ownable {
         uint electionId = electionsSize;
 
         //_addCandidates(electionId, nbCandidates, _candidatesNames);
-        for (uint i = 0; i < nbCandidates; i ++) {
+        for (uint i = 0; i < nbCandidates; i++) {
             election.addCandidate(_candidatesNames[i]);
         }
         electionsSize +=1 ;
@@ -56,6 +56,12 @@ contract ElectionFactory is Ownable {
         ownerElectionCount[msg.sender] += 1;
         emit NewElection(electionId);
     }
+
+    function _endElection(uint id) external{
+        elections[id].closeElection();
+        elections[id].computeResult();
+    }
+
 
     /*
        TODO : Test and see if candidates are added without a mapping,

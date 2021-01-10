@@ -2,10 +2,14 @@ pragma solidity ^0.8.0;
 
 contract Candidate {
     string public name;
-    uint[] notes; // notes from 0 to 6
+    uint choiceCount;
+    mapping (uint => uint) public notes;
+    uint public percent;
+    uint public averageNote;
 
-    constructor(string memory _name) {
+    constructor(string memory _name, uint _choiceCount) {
         name = _name;
+        choiceCount = _choiceCount;
     }
 
     function setName(string memory _name) public {
@@ -13,6 +17,23 @@ contract Candidate {
     }
 
     function addNotes(uint note) public {
-        notes.push(note);
+        notes[note]++;
+    }
+
+    function getAvgNote() public view returns(uint){
+        return averageNote;
+    }
+
+    function getPercent() public view returns(uint){
+        return percent;
+    }
+
+    function computeAverageNote(uint totalVoters) public {
+        for (uint i = choiceCount; i > 0 && percent <= 50; i++){
+            percent = percent + (notes[i] / totalVoters);
+            if(percent >= 50){
+                averageNote = i;
+            }
+        }
     }
 }
