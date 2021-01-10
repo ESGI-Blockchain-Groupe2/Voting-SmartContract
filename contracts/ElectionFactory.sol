@@ -28,7 +28,7 @@ contract ElectionFactory is Ownable {
     struct Candidate {
         uint id; // TODO : Utiliser l'index du tableau candidats[] ?
         string name;
-        uint[] notes; // notes from 0 to 6
+        uint8[] notes; // notes from 0 to 6
     }
 
     struct User {
@@ -73,7 +73,7 @@ contract ElectionFactory is Ownable {
 
         //_addCandidates(electionId, nbCandidates, _candidatesNames);
         for (uint i = 0; i < nbCandidates; i ++) {
-            election.candidates[election.candidates.length] = Candidate(i, _candidatesNames[i], new uint[](0));
+            election.candidates[election.candidates.length] = Candidate(i, _candidatesNames[i], new uint8[](0));
         }
 
         electionToOwner[electionId] = msg.sender;
@@ -102,6 +102,11 @@ contract ElectionFactory is Ownable {
     }
 
     function seeElection(uint id) external view {
+        //return elections[id];
+    }
 
+
+    function _getElection(uint id) external view returns (Election memory) {
+        return elections[id];
     }
 }

@@ -1,19 +1,33 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.7.0;
 
-import "truffle/Assert.sol";
 import "truffle/DeployedAddresses.sol";
 import "../contracts/ElectionFactory.sol";
 
 contract TestElectionFactory {
+    string[] candidatesNames;
+    ElectionFactory.Candidate[] expectedCandidates;
+
     function test_election_creation() public {
-        ElectionFactory electionFactory = ElectionFactory();
-        string[] candidatesNames;
+        ElectionFactory electionFactory = new ElectionFactory();
         candidatesNames.push("George H. W. Bush");
         candidatesNames.push("Bill Clinton");
         candidatesNames.push("Ross Perot");
         electionFactory._createElection("USA president election", candidatesNames);
-        electionFactory.seeE    lection(0)
-        Assert.equal(election, expected, "Election should be initialized correctly");
+
+        expectedCandidates.push(ElectionFactory.Candidate(1, "George H. W. Bush", new uint8[](0)));
+        /*
+            ElectionFactory.Candidate(2, "1ill Clinton", new uint8[](0)),
+            ElectionFactory.Candidate(3, "Ross Perot", new uint8[](0))
+        ];*/
+        ElectionFactory.Election memory expectedElection = ElectionFactory.Election("USA president election", expectedCandidates, 0, true, 0, 0);
+        /*
+        election.title = _title;
+        election.totalVoters = 0;
+        election.isOpen = true;
+        election.creationDate = block.timestamp;
+        election.expiresAfter = expiration;
+        */
+        assert(keccak256(abi.encodePacked(electionFactory._getElection(0).title)) == keccak256(abi.encodePacked(expectedElection.title)));
     }
 }
