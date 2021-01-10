@@ -4,7 +4,7 @@ import './Candidate.sol';
 contract Election {
     string public title;
     Candidate[] public candidates;
-    address[] public voters;
+    mapping (address => bool) voters;
     uint totalVoters;
     bool isOpen;
     uint256 creationDate;
@@ -34,8 +34,12 @@ contract Election {
         totalVoters++;
     }
 
-    function addVoters() public {
-        voters.push(msg.sender);
+    function addVoter() public {
+        voters[msg.sender] = true;
+    }
+
+    function alreadyVote() public view returns (bool){
+        return voters[msg.sender];
     }
 
 }

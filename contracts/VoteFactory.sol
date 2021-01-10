@@ -14,10 +14,11 @@ contract VoteFactory {
     event NewVote(uint electionId);
 
     function _voteToElection(uint electionId, uint[] calldata notes) external {
+        require(election.alreadyVote() == false);
         for (uint i = 0; i < notes.length; i++){
             election.candidates(i).addNotes(notes[i]);
         }
-        election.addVoters();
+        election.addVoter();
         election.incrementVoters();
         emit NewVote(electionId);
     }
