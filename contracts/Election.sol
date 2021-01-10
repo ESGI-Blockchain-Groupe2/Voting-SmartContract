@@ -1,9 +1,10 @@
-pragma solidity ^0.7.0;
+pragma solidity ^0.8.0;
 import './Candidate.sol';
 
 contract Election {
     string public title;
     Candidate[] public candidates;
+    address[] public voters;
     uint totalVoters;
     bool isOpen;
     uint256 creationDate;
@@ -27,6 +28,14 @@ contract Election {
 
     function closeElection() public {
         isOpen = false;
+    }
+
+    function incrementVoters() public {
+        totalVoters++;
+    }
+
+    function addVoters() public {
+        voters.push(msg.sender);
     }
 
 }
