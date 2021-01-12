@@ -56,6 +56,17 @@ contract Election {
             candidates[i].computeAverageNote(totalVoters);
         }
 
+        computeFirstRoundWinners();
+
+        if(winners.length > 1){
+            computeFinalRoundWinner();
+        }
+        else {
+            winner = winners[0];
+        }
+    }
+
+    function computeFirstRoundWinners() public {
         uint higherNote = 0;
         for(uint i = 0; i < candidates.length; i++){
             if(higherNote == candidates[i].getAvgNote()){
@@ -66,24 +77,20 @@ contract Election {
                 winners.push(i);
             }
         }
+    }
 
-        uint finalWinner;
-        if(winners.length > 1){
-            uint higherPercent;
-            for(uint i = 0; i < winners.length; i++){
-                uint currentPercent = candidates[winners[i]].getPercent();
-                if(i == 0){
-                    higherPercent = currentPercent;
-                    finalWinner = winners[i];
-                }
-                else if (currentPercent > higherPercent){
-                    higherPercent = currentPercent;
-                    finalWinner = winners[i];
-                }
+    function computeFinalRoundWinner() public {
+        uint higherPercent;
+        for(uint i = 0; i < winners.length; i++){
+            uint currentPercent = candidates[winners[i]].getPercent();
+            if(i == 0){
+                higherPercent = currentPercent;
+                winner = winners[i];
             }
-        }
-        else {
-            finalWinner = winners[0];
+            else if (currentPercent > higherPercent){
+                higherPercent = currentPercent;
+                winner = winners[i];
+            }
         }
     }
 }
