@@ -17,6 +17,10 @@ contract Candidate {
         name = _name;
     }
 
+    function getName() public view returns (string memory) {
+        return name;
+    }
+
     function addNotes(uint note) public {
         notes[note]++;
     }

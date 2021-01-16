@@ -13,10 +13,11 @@ contract TestCandidate {
         candidate = new Candidate("jean", 2);
     }
 
-    function testNameIsCorrect() public {
+    function testGetNameShouldReturnCorrectName() public {
         string memory expected = "jean";
-        Assert.equal(bytes(candidate.name), bytes(expected), "Candidate name should be jean");
+        Assert.equal(string(candidate.getName()), string(expected), "Candidate name should be jean");
     }
+
     function testgetAvgNote() public {
 
     }
