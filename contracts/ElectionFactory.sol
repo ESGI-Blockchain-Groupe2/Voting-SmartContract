@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 pragma experimental ABIEncoderV2;
 
@@ -44,6 +45,7 @@ contract ElectionFactory is Ownable {
         uint nbCandidates = _candidatesNames.length;
         
         Election election = new Election(_title, block.timestamp, expiration);
+        elections.push(election);
         uint electionId = elections.length;
 
         //_addCandidates(electionId, nbCandidates, _candidatesNames);
@@ -83,6 +85,11 @@ contract ElectionFactory is Ownable {
     }
 
     function seeElection(uint id) external view {
+        //return elections[id];
+    }
 
+
+    function _getElection(uint id) external view returns (Election memory) {
+        return elections[id];
     }
 }
