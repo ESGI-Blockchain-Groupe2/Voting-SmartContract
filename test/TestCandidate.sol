@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: UNLICENSED
+
 pragma solidity ^0.8.0;
 
 import "truffle/Assert.sol";
@@ -9,12 +11,16 @@ contract TestCandidate {
 
     // Run before every test function
     function beforeEach() public {
-        candidate = new Candidate();
+        candidate = new Candidate("jean ",2);
+    }
+
+    function testgetAvgNote(){
+
     }
 
     function testComputeAverageNote() public {
         uint choicecount = 10;
         uint percent = 45;
-        uint result = candidate.getPercent(percent);
+        uint result = candidate.getPercent();
     }
 }
