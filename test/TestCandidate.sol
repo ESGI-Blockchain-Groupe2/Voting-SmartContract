@@ -15,7 +15,8 @@ contract TestCandidate {
     }
 
     function testNameIsCorrect() public {
-        Assert.equal(bytes(candidate.name), string("jean"), "Candidate name should be jean");
+        string memory expected = "jean"
+        Assert.equal(bytes(candidate.name), bytes(expected), "Candidate name should be jean");
     }
     function testgetAvgNote() public {
 
