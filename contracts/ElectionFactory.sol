@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 pragma experimental ABIEncoderV2;
 
@@ -83,6 +84,11 @@ contract ElectionFactory is Ownable {
     }
 
     function seeElection(uint id) external view {
+        //return elections[id];
+    }
 
+
+    function _getElection(uint id) external view returns (Election memory) {
+        return elections[id];
     }
 }
