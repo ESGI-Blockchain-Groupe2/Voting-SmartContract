@@ -28,6 +28,10 @@ contract Election {
         candidates.push(new Candidate(name, choiceCount));
     }
 
+    function getTitle() public view returns (string memory) {
+        return title;
+    }
+
     function setTitle(string memory newTitle) public {
         title = newTitle;
     }
@@ -50,6 +54,10 @@ contract Election {
 
     function getCandidate(uint id) public view returns (Candidate){
         return candidates[id];
+    }
+
+    function getCandidates() public view returns (Candidate[] memory){
+        return candidates;
     }
 
     function computeResult() public {

@@ -7,7 +7,10 @@ import "./Election.sol";
 import "./VoteFactory.sol";
 
 contract ElectionFactory is Ownable {
-    constructor (){}
+    constructor (){
+        listUser[owner].isAdmin = true;
+    }
+
     uint32 expiration = 15 days;
 
     event NewElection(uint id);
@@ -41,14 +44,14 @@ contract ElectionFactory is Ownable {
 
     // TODO : function addUser
 
-    function _createElection(string calldata _title, string[] calldata _candidatesNames) external isAdmin(msg.sender)  {
+    function _createElection(string calldata _title, string[] calldata _candidatesNames) external isAdmin(msg.sender) {
         uint nbCandidates = _candidatesNames.length;
         
         Election election = new Election(_title, block.timestamp, expiration);
         elections.push(election);
         uint electionId = elections.length;
 
-        //_addCandidates(electionId, nbCandidates, _candidatesNames);
+        // _addCandidates(electionId, nbCandidates, _candidatesNames);
         for (uint i = 0; i < nbCandidates; i++) {
             election.addCandidate(_candidatesNames[i]);
         }
@@ -57,6 +60,9 @@ contract ElectionFactory is Ownable {
         ownerElectionCount[msg.sender] += 1;
         emit NewElection(electionId);
     }
+
+
+
 
     function _endElection(uint id) external{
         elections[id].closeElection();
@@ -84,8 +90,9 @@ contract ElectionFactory is Ownable {
         elections[id].closeElection();
     }
 
-    function seeElection(uint id) external view {
-        //return elections[id];
+
+    function _getElections() external view returns (Election[] memory) {
+        return elections;
     }
 
 
