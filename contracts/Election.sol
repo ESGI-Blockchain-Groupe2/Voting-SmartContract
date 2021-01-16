@@ -9,7 +9,7 @@ contract Election {
     uint totalVoters;
     bool isOpen;
     uint256 creationDate;
-    uint32 expiresAfter;
+    uint256 expiresAfter;
 
     uint[] winners;
     uint choiceCount;
@@ -50,6 +50,10 @@ contract Election {
 
     function getCandidate(uint id) public view returns (Candidate){
         return candidates[id];
+    }
+
+    function getWinner() public view returns (uint){
+        return winner;
     }
 
     function computeResult() public {
