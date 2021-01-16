@@ -2,17 +2,26 @@
 pragma solidity ^0.8.0;
 pragma experimental ABIEncoderV2;
 
-import './ElectionFactory.sol';
+import "./Election.sol";
 
-contract VoteFactory is ElectionFactory {
+contract VoteFactory {
 
-    //Election public election;
+    constructor(Election _election) {
+        election = _election;
+    }
 
-    mapping (uint => address) voteToOwner;
-    mapping (uint => uint) voteToElection;
+    Election public election;
 
-    struct Vote {
-        address id;
+    event NewVote(uint electionId);
+
+    function _voteToElection(uint electionId, uint[] calldata notes) external {
+        require(election.alreadyVote() == false);
+        for (uint i = 0; i < notes.length; i++){
+            election.candidates(i).addNotes(notes[i]);
+        }
+        election.addVoter();
+        election.incrementVoters();
+        emit NewVote(electionId);
     }
 
 }
