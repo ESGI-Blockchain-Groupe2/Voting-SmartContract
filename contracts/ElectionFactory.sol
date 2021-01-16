@@ -45,6 +45,7 @@ contract ElectionFactory is Ownable {
         uint nbCandidates = _candidatesNames.length;
         
         Election election = new Election(_title, block.timestamp, expiration);
+        elections.push(election);
         uint electionId = elections.length;
 
         //_addCandidates(electionId, nbCandidates, _candidatesNames);
