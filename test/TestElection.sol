@@ -12,7 +12,8 @@ contract TestElection {
     Election public election;
 
     function beforeEach() public {
-        election = new Election("Test Election", block.timestamp, 1 days + uint32(block.timestamp));
+        election = new Election();
+        election.init("Test Election", block.timestamp, 1 days + uint32(block.timestamp));
     }
 
     function testAddCandidate() public {

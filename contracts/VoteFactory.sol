@@ -6,7 +6,10 @@ import "./Election.sol";
 
 contract VoteFactory {
 
-    constructor(Election _election) {
+    constructor() {
+    }
+
+    function init(Election _election) public {
         election = _election;
     }
 

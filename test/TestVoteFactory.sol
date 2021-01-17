@@ -14,11 +14,12 @@ contract TestVoteFactory {
     // Run before every test function
     function beforeEach() public {
         delete election;
-        election = new Election("TestElection", block.timestamp, 15 days);
+        election = new Election();
+        election.init("TestElection", block.timestamp, 15 days);
         delete voteFactory;
-        voteFactory = new VoteFactory(election);
+        voteFactory = new VoteFactory();
+        voteFactory.init(election);
         delete notes;
-
     }
 
     function generateNotesForElection(Election _election) internal returns (uint[] memory) {

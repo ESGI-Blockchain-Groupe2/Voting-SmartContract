@@ -8,7 +8,9 @@ contract Candidate {
     uint public percent;
     uint public averageNote;
 
-    constructor(string memory _name, uint _choiceCount) {
+    constructor() {}
+
+    function init(string memory _name, uint _choiceCount) public {
         name = _name;
         choiceCount = _choiceCount;
     }

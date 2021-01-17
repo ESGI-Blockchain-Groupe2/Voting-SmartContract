@@ -15,7 +15,9 @@ contract Election {
     uint choiceCount;
     uint winner;
 
-    constructor(string memory _title, uint256 timestamp, uint32 expiration) {
+    constructor() {}
+
+    function init(string memory _title, uint256 timestamp, uint32 expiration) public {
         title = _title;
         creationDate = timestamp;
         expiresAfter = expiration;
@@ -25,7 +27,9 @@ contract Election {
     }
 
     function addCandidate(string memory name) public {
-        candidates.push(new Candidate(name, choiceCount));
+        Candidate candidate = new Candidate();
+        candidate.init(name, choiceCount);
+        candidates.push(candidate);
     }
 
 

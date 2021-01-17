@@ -10,7 +10,8 @@ contract TestCandidate {
 
     // Run before every test function
     function beforeEach() public {
-        candidate = new Candidate("jean", 7);
+        candidate = new Candidate();
+        candidate.init("jean", 7);
     }
 
     function testGetNameShouldReturnCorrectName() public {
