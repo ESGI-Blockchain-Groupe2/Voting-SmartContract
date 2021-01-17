@@ -10,7 +10,7 @@ contract TestCandidate {
 
     // Run before every test function
     function beforeEach() public {
-        candidate = new Candidate("jean", 2);
+        candidate = new Candidate("jean", 7);
     }
 
     function testGetNameShouldReturnCorrectName() public {
@@ -18,13 +18,28 @@ contract TestCandidate {
         Assert.equal(string(candidate.getName()), string(expected), "Candidate name should be jean");
     }
 
-    function testgetAvgNote() public {
+    function initCandidateWithNote() public {
+        candidate.addNotes(5);
+        candidate.addNotes(6);
+        candidate.addNotes(3);
+    }
 
+    function testGetNumberNote() public {
+        initCandidateWithNote();
+        uint note = 5;
+        uint numberNote = candidate.getNumberVoteForNote(note);
+        Assert.equal(numberNote, 1, "Note 5 should've been chosen once");
+    }
+
+    function testCalculatePercent() public {
+        initCandidateWithNote();
+        uint percent = candidate.calculatePercent(3, 3);
+        Assert.equal(percent, 33, "Percent of voters voting for note 5");
     }
 
     function testComputeAverageNote() public {
-        //uint choicecount = 10;
-        //uint percent = 45;
-        //uint result = candidate.getPercent();
+        initCandidateWithNote();
+        candidate.computeAverageNote(3);
+        Assert.equal(candidate.getAvgNote(), 5, "Candidate average note should be 5");
     }
 }
