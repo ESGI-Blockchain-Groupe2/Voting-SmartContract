@@ -56,11 +56,20 @@ contract Election {
         return winner;
     }
 
+    function getOneFirstRoundWinner(uint index) public view returns(uint){
+        return winners[index];
+    }
+
+    function getFirstRoundWinners() public view returns(uint[] memory){
+        return winners;
+    }
+
     function computeResult() public {
         computeCandidateAverageNote();
-        
+
         computeFirstRoundWinners();
 
+        computeFinalRoundWinner();
         if(winners.length > 1){
             computeFinalRoundWinner();
         }
@@ -78,7 +87,7 @@ contract Election {
     function computeFirstRoundWinners() public {
         uint higherNote = 0;
         for(uint i = 0; i < candidates.length; i++){
-            if(higherNote == candidates[i].getAvgNote()){
+            if(higherNote <= candidates[i].getAvgNote()){
                 winners.push(i);
             }
             else if(higherNote < candidates[i].getAvgNote()){

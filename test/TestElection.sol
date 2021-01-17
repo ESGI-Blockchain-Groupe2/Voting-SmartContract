@@ -43,7 +43,7 @@ contract TestElection {
         election.getCandidate(2).addNotes(3);
 
         election.incrementVoters();
-        
+
         // Third voter
         election.getCandidate(0).addNotes(2);
         election.getCandidate(1).addNotes(2);
@@ -57,25 +57,46 @@ contract TestElection {
     function testComputeCandidateAverageNote() public {
         initElectionWithVote();
         election.computeCandidateAverageNote();
+        uint avgNote = election.getCandidate(0).getAvgNote();
+        Assert.equal(avgNote, 5, "Candidate 1 should have average note of 5");
     }
 
-    function testComputeFirstRoundWinners() public {
+    function testComputeCandidate2AverageNote() public {
+        initElectionWithVote();
+        election.computeCandidateAverageNote();
+        uint avgNote = election.getCandidate(1).getAvgNote();
+        Assert.equal(avgNote, 3, "Candidate 2 should have average note of 3");
+    }
+
+    function testComputeCandidate3AverageNote() public {
+        initElectionWithVote();
+        election.computeCandidateAverageNote();
+        uint avgNote = election.getCandidate(2).getAvgNote();
+        Assert.equal(avgNote, 2, "Candidate 3 should have average note of 2");
+    }
+
+    function testComputeFirstRoundWinnersWithoutDraw() public {
         initElectionWithVote();
         election.computeCandidateAverageNote();
         election.computeFirstRoundWinners();
+        uint[] memory winners = election.getFirstRoundWinners();
+        Assert.equal(winners[0], 0, "First round winner should be candidate 1 with average note of 5");
     }
 
     function testComputeFinalRoundWinner() public {
         initElectionWithVote();
         election.computeCandidateAverageNote();
+        election.computeFirstRoundWinners();
         election.computeFinalRoundWinner();
-        election.computeFinalRoundWinner();
+        uint winner = election.getWinner();
+        Assert.equal(winner, 0, "We should get the first candidate as winner");
     }
 
     function testComputeResultWithoutDraw() public {
         initElectionWithVote();
         election.computeResult();
-        Assert.equal(election.getWinner(), 1, "should return election winner index");
+        uint winner = election.getWinner();
+        Assert.equal(winner, 0, "should return election winner index");
     }
 
     
