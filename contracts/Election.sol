@@ -40,6 +40,10 @@ contract Election {
         isOpen = false;
     }
 
+    function getIsOpen() public view returns (bool) {
+        return isOpen;
+    }
+
     function incrementVoters() public {
         totalVoters++;
     }

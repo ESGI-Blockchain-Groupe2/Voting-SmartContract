@@ -7,51 +7,82 @@ import "../contracts/ElectionFactory.sol";
 
 contract TestElectionFactory {
 
+    ElectionFactory internal electionFactory;
+    string[] namesList;
+    string[] namesList2;
 
-
-    //string[] candidatesNames;
-    //ElectionFactory.Candidate[] expectedCandidates;
-
-    /*function test_election_creation() public {
-        string[] memory candidatesNames = new string[](3);
-        ElectionFactory.Candidate[] memory expectedCandidates = new ElectionFactory.Candidate[](3);
-        ElectionFactory electionFactory = new ElectionFactory();
-        candidatesNames[0] = "George H. W. Bush";
-        candidatesNames[1] = "Bill Clinton";
-        candidatesNames[2] = "Ross Perot";
-        electionFactory._createElection("USA president election", candidatesNames);
-
-        //expectedCandidates[0] = ElectionFactory.Candidate(1, "George H. W. Bush", new uint8[](0));
-        //    ElectionFactory.Candidate(2, "1ill Clinton", new uint8[](0)),
-        //    ElectionFactory.Candidate(3, "Ross Perot", new uint8[](0))
-        //];
-        ElectionFactory.Election memory expectedElection = ElectionFactory.Election("USA president election", expectedCandidates, 0, true, 0, 0);
-
-        assert(keccak256(abi.encodePacked(electionFactory._getElection(0).title)) == keccak256(abi.encodePacked(expectedElection.title)));
-    }*/
+    function beforeEach() public {
+        electionFactory = new ElectionFactory();
+    }
 
     function test_election_creation() public {
-        string[] memory candidatesNames = new string[](3);
-        //ElectionFactory.Candidate[] memory expectedCandidates = new ElectionFactory.Candidate[](3);
-        ElectionFactory electionFactory = new ElectionFactory();
-        candidatesNames[0] = "George H. W. Bush";
-        candidatesNames[1] = "Bill Clinton";
-        candidatesNames[2] = "Ross Perot";
 
-        electionFactory._createElection("USA president election", candidatesNames);
+        delete namesList;
+        namesList.push("George H. W. Bush");
+        namesList.push("Bill Clinton");
+        namesList.push("Ross Perot");
+
+        electionFactory._createElection("USA president election", namesList);
 
         Election[] memory electionList = electionFactory._getElections();
 
-        Election election = new Election("USA president election", block.timestamp, 15 days);
+        Assert.equal(string(electionList[0].getTitle()), string("USA president election"), "Title of the first election should be USA president election");
+        Assert.equal(string(electionList[0].getCandidates()[0].getName()), string(namesList[0]), "First candidate sould be George H. W. Bush");
+        Assert.equal(string(electionList[0].getCandidates()[1].getName()), string(namesList[1]), "Second candidate sould be Bill Clinton");
+        Assert.equal(string(electionList[0].getCandidates()[2].getName()), string(namesList[2]), "Third candidate sould be Ross Perot");
+    }
 
-        Assert.equal(string(electionList[0].getTitle()), string(election.getTitle()), "test");
-        //Assert.equal(string(electionList[0].getCandidates()[0].getName()), string(election.getCandidates()[0].getName()), "test");
-        //expectedCandidates[0] = ElectionFactory.Candidate(1, "George H. W. Bush", new uint8[](0));
-        //    ElectionFactory.Candidate(2, "1ill Clinton", new uint8[](0)),
-        //    ElectionFactory.Candidate(3, "Ross Perot", new uint8[](0))
-        //];
-        //ElectionFactory.Election memory expectedElection = ElectionFactory.Election("USA president election", expectedCandidates, 0, true, 0, 0);
+    function test_end_election() public {
+        delete namesList;
+        namesList.push("George H. W. Bush");
+        namesList.push("Bill Clinton");
+        namesList.push("Ross Perot");
 
-        //assert(keccak256(abi.encodePacked(electionFactory._getElection(0).title)) == keccak256(abi.encodePacked(expectedElection.title)));
+        electionFactory._createElection("USA president election", namesList);
+
+        electionFactory._endElection(0);
+
+        Assert.equal(electionFactory._getElection(0).getIsOpen(), false, "test");
+
+    }
+
+    function test_get_election() public {
+
+        delete namesList;
+        delete namesList2;
+
+        namesList.push("George H. W. Bush");
+        namesList.push("Bill Clinton");
+        namesList.push("Ross Perot");
+
+        namesList2.push("Titi");
+        namesList2.push("Gros");
+        namesList2.push("Minet");
+
+        electionFactory._createElection("USA president election", namesList);
+        electionFactory._createElection("Titi et gros minet", namesList2);
+
+        Assert.equal(string(electionFactory._getElection(1).getTitle()), string("Titi et gros minet"), "Should return the right election");
+        Assert.equal(string(electionFactory._getElection(1).getCandidates()[0].getName()), string("Titi"), "Should return the right candidate name");
+        Assert.equal(string(electionFactory._getElection(0).getCandidates()[0].getName()), string("George H. W. Bush"), "Should return the right candidate name");
+    }
+
+    function test_get_elections() public {
+
+        delete namesList;
+        delete namesList2;
+
+        namesList.push("George H. W. Bush");
+        namesList.push("Bill Clinton");
+        namesList.push("Ross Perot");
+
+        namesList2.push("Titi");
+        namesList2.push("Gros");
+        namesList2.push("Minet");
+
+        electionFactory._createElection("USA president election", namesList);
+        electionFactory._createElection("Titi et gros minet", namesList2);
+
+        Assert.equal(int(electionFactory._getElections().length), int(2), "Should return the right election");
     }
 }
