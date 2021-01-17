@@ -8,44 +8,41 @@ import "./VoteFactory.sol";
 
 contract ElectionFactory is Ownable {
     constructor (){
-        listUser[owner].isAdmin = true;
+        listAdmin[owner] = true;
     }
 
     uint32 expiration = 15 days;
 
     event NewElection(uint id);
 
-    struct User {
-        address userAddress;
-        bool isAdmin;
-    }
-
-    /*mapping (uint => Election) elections;
-    uint electionsSize = 0;*/
     Election[] elections;
-    User[] users;
 
     mapping (uint => address) electionToOwner;
     mapping (address => uint) ownerElectionCount;
-    mapping (address => User) listUser;
+    mapping (address => bool) listAdmin;
 
     modifier isAdmin(address userAddress){
-        require (listUser[userAddress].isAdmin == true);
+        require (listAdmin[userAddress] == true);
         _;
     }
 
     function _addAdmin(address userAddress) private isAdmin(msg.sender) {
-        listUser[userAddress].isAdmin = true;
+        listAdmin[userAddress]= true;
     }
 
     function _deleteAdmin(address userAddress) private isAdmin(msg.sender) {
-        listUser[userAddress].isAdmin = false;
+        listAdmin[userAddress] = false;
+    }
+
+
+    function isUserAdmin(address userAddress) external view returns(bool){
+        return listAdmin[userAddress];
     }
 
     function _createElection(string calldata _title, string[] calldata _candidatesNames) external isAdmin(msg.sender) {
         uint nbCandidates = _candidatesNames.length;
 
-
+        
         Election election = new Election(_title, block.timestamp, expiration);
 
 
@@ -53,10 +50,11 @@ contract ElectionFactory is Ownable {
             election.addCandidate(_candidatesNames[i]);
         }
 
-        /*elections.push(election);
-        uint electionId = elections.length;*/
+        elections.push(election);
+        uint electionId = elections.length;
+        
+        electionToOwner[electionId] = msg.sender;
 
-        /*electionToOwner[electionId] = msg.sender;
         ownerElectionCount[msg.sender] += 1;
         emit NewElection(electionId);*/
     }

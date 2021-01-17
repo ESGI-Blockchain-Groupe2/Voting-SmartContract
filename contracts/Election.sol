@@ -28,6 +28,7 @@ contract Election {
         candidates.push(new Candidate(name, choiceCount));
     }
 
+
     function getCandidates() public view returns (Candidate[] memory) {
         return candidates;
     }
@@ -42,6 +43,10 @@ contract Election {
 
     function closeElection() public {
         isOpen = false;
+    }
+
+    function getIsOpen() public view returns (bool) {
+        return isOpen;
     }
 
     function incrementVoters() public {
