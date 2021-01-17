@@ -28,8 +28,16 @@ contract Election {
         candidates.push(new Candidate(name, choiceCount));
     }
 
+    function getCandidates() public view returns (Candidate[] memory) {
+        return candidates;
+    }
+
     function setTitle(string memory newTitle) public {
         title = newTitle;
+    }
+
+    function getTitle() public view returns (string memory) {
+        return title;
     }
 
     function closeElection() public {
@@ -40,8 +48,9 @@ contract Election {
         totalVoters++;
     }
 
-    function addVoter() public {
-        voters[msg.sender] = true;
+    function addVoter(address voter) public {
+        voters[voter] = true;
+        incrementVoters();
     }
 
     function alreadyVote() public view returns (bool){
@@ -51,6 +60,10 @@ contract Election {
     function getCandidate(uint id) public view returns (Candidate){
         return candidates[id];
     }
+
+
+    function getNumberOfCandidates() public view returns (uint) {
+        return candidates.length;
 
     function getWinner() public view returns (uint){
         return winner;

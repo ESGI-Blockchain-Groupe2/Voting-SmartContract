@@ -1,4 +1,4 @@
-const HDWalletProvider = require('truffle-hdwallet-provider-privkey');
+//const HDWalletProvider = require('truffle-hdwallet-provider-privkey');
 // !!! Only put testing-purpose private keys !!!
 const privateKey = "";
 const endpointUrl = "https://kovan.infura.io/v3/5fa7b7392de743468fa714d7dc54c258";
