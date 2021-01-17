@@ -14,14 +14,20 @@ contract VoteFactory {
 
     event NewVote(uint electionId);
 
-    function _voteToElection(uint electionId, uint[] calldata notes) external {
-        require(election.alreadyVote() == false);
-        for (uint i = 0; i < notes.length; i++){
-            election.candidates(i).addNotes(notes[i]);
+    modifier hasNotVoted(address userAddress){
+        require (!election.alreadyVote(), "User has already voted");
+        _;
+    }
+
+    /**
+     * Gives one note to each candidates of the election
+     */
+    function _voteToElection(uint[] calldata notes) external hasNotVoted(msg.sender) {
+        require(election.getNumberOfCandidates() == notes.length, "Not same amount of candidates and votes");
+        for (uint i = 0; i < election.getNumberOfCandidates(); i++){
+            election.candidates(i).addNote(notes[i]);
         }
-        election.addVoter();
-        election.incrementVoters();
-        emit NewVote(electionId);
+        election.addVoter(msg.sender);
     }
 
 }

@@ -21,8 +21,12 @@ contract Candidate {
         return name;
     }
 
-    function addNotes(uint note) public {
+    function addNote(uint note) public {
         notes[note]++;
+    }
+
+    function getNote(uint choice) public view returns (uint) {
+        return notes[choice];
     }
 
     function getAvgNote() public view returns(uint){

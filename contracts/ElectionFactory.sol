@@ -7,7 +7,10 @@ import "./Election.sol";
 import "./VoteFactory.sol";
 
 contract ElectionFactory is Ownable {
-    constructor (){}
+    constructor (){
+        listUser[owner].isAdmin = true;
+    }
+
     uint32 expiration = 15 days;
 
     event NewElection(uint id);
@@ -39,53 +42,33 @@ contract ElectionFactory is Ownable {
         listUser[userAddress].isAdmin = false;
     }
 
-    // TODO : function addUser
-
-    function _createElection(string calldata _title, string[] calldata _candidatesNames) external isAdmin(msg.sender)  {
+    function _createElection(string calldata _title, string[] calldata _candidatesNames) external isAdmin(msg.sender) {
         uint nbCandidates = _candidatesNames.length;
-        
-        Election election = new Election(_title, block.timestamp, expiration);
-        elections.push(election);
-        uint electionId = elections.length;
 
-        //_addCandidates(electionId, nbCandidates, _candidatesNames);
+
+        Election election = new Election(_title, block.timestamp, expiration);
+
+
         for (uint i = 0; i < nbCandidates; i++) {
             election.addCandidate(_candidatesNames[i]);
         }
 
-        electionToOwner[electionId] = msg.sender;
+        /*elections.push(election);
+        uint electionId = elections.length;*/
+
+        /*electionToOwner[electionId] = msg.sender;
         ownerElectionCount[msg.sender] += 1;
-        emit NewElection(electionId);
+        emit NewElection(electionId);*/
     }
 
-    function _endElection(uint id) external{
+    function _endElection(uint id) external isAdmin(msg.sender) {
         elections[id].closeElection();
         elections[id].computeResult();
     }
 
 
-    /*
-       TODO : Test and see if candidates are added without a mapping,
-        else uncomment this and the two commented parameters in struct
-    */
-    /*function _addCandidates(uint electionId, uint nbCandidates, string[] calldata _candidatesNames) internal {
-        Election storage e = elections[electionId];
-
-        for (uint i = 0; i < nbCandidates; i ++) {
-            //elections[electionId].candidates[i] = Candidate({id: i, name: _candidatesNames[i], notes: new uint[](0)});
-            e.candidates[e.candidatesSize] = Candidate(i, _candidatesNames[i], new uint[](0));
-        }
-
-        e.candidatesSize++;
-    }*/
-
-
-    function _closeElection(uint id) external isAdmin(msg.sender) /* isOpen(id)*/ {
-        elections[id].closeElection();
-    }
-
-    function seeElection(uint id) external view {
-        //return elections[id];
+    function _getElections() external view returns (Election[] memory) {
+        return elections;
     }
 
 

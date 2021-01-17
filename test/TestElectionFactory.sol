@@ -2,28 +2,32 @@
 pragma solidity >= 0.7.0 < 0.8.0;
 pragma experimental ABIEncoderV2;
 
+import "truffle/Assert.sol";
 import "truffle/DeployedAddresses.sol";
 import "../contracts/ElectionFactory.sol";
 
 contract TestElectionFactory {
-    //string[] candidatesNames;
-    //ElectionFactory.Candidate[] expectedCandidates;
+    ElectionFactory internal electionFactory;
+    string[] namesList;
+    string[] namesList2;
 
-    /*function test_election_creation() public {
-        string[] memory candidatesNames = new string[](3);
-        ElectionFactory.Candidate[] memory expectedCandidates = new ElectionFactory.Candidate[](3);
-        ElectionFactory electionFactory = new ElectionFactory();
-        candidatesNames[0] = "George H. W. Bush";
-        candidatesNames[1] = "Bill Clinton";
-        candidatesNames[2] = "Ross Perot";
-        electionFactory._createElection("USA president election", candidatesNames);
+    function beforeEach() public {
+        electionFactory = new ElectionFactory();
+    }
 
-        //expectedCandidates[0] = ElectionFactory.Candidate(1, "George H. W. Bush", new uint8[](0));
-        //    ElectionFactory.Candidate(2, "1ill Clinton", new uint8[](0)),
-        //    ElectionFactory.Candidate(3, "Ross Perot", new uint8[](0))
-        //];
-        ElectionFactory.Election memory expectedElection = ElectionFactory.Election("USA president election", expectedCandidates, 0, true, 0, 0);
+    function test_get_election() public {
 
-        assert(keccak256(abi.encodePacked(electionFactory._getElection(0).title)) == keccak256(abi.encodePacked(expectedElection.title)));
-    }*/
+        namesList.push("George H. W. Bush");
+        namesList.push("Bill Clinton");
+        namesList.push("Ross Perot");
+
+        namesList2.push("George H. W. Bush");
+        namesList2.push("Bill Clinton");
+        namesList2.push("Ross Perot");
+
+        electionFactory._createElection("USA president election", namesList);
+        electionFactory._createElection("Titi et gros minet", namesList2);
+
+        //Assert.equal(string(electionFactory._getElection(1).getTitle()), string("Titi et gros minet"), "Should return the right election");
+    }
 }
