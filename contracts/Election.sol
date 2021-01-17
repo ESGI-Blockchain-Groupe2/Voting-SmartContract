@@ -9,7 +9,7 @@ contract Election {
     uint totalVoters;
     bool isOpen;
     uint256 creationDate;
-    uint32 expiresAfter;
+    uint256 expiresAfter;
 
     uint[] winners;
     uint choiceCount;
@@ -28,12 +28,17 @@ contract Election {
         candidates.push(new Candidate(name, choiceCount));
     }
 
-    function getTitle() public view returns (string memory) {
-        return title;
+
+    function getCandidates() public view returns (Candidate[] memory) {
+        return candidates;
     }
 
     function setTitle(string memory newTitle) public {
         title = newTitle;
+    }
+
+    function getTitle() public view returns (string memory) {
+        return title;
     }
 
     function closeElection() public {
@@ -48,8 +53,9 @@ contract Election {
         totalVoters++;
     }
 
-    function addVoter() public {
-        voters[msg.sender] = true;
+    function addVoter(address voter) public {
+        voters[voter] = true;
+        incrementVoters();
     }
 
     function alreadyVote() public view returns (bool){
@@ -60,22 +66,39 @@ contract Election {
         return candidates[id];
     }
 
-    function getCandidates() public view returns (Candidate[] memory){
-        return candidates;
+
+    function getNumberOfCandidates() public view returns (uint) {
+        return candidates.length;
+
+    function getWinner() public view returns (uint){
+        return winner;
+    }
+
+    function getOneFirstRoundWinner(uint index) public view returns(uint){
+        return winners[index];
+    }
+
+    function getFirstRoundWinners() public view returns(uint[] memory){
+        return winners;
     }
 
     function computeResult() public {
-        for (uint i = 0; i < candidates.length; i++){
-            candidates[i].computeAverageNote(totalVoters);
-        }
+        computeCandidateAverageNote();
 
         computeFirstRoundWinners();
 
+        computeFinalRoundWinner();
         if(winners.length > 1){
             computeFinalRoundWinner();
         }
         else {
             winner = winners[0];
+        }
+    }
+
+    function computeCandidateAverageNote() public {
+        for (uint i = 0; i < candidates.length; i++){
+            candidates[i].computeAverageNote(totalVoters);
         }
     }
 
@@ -87,6 +110,7 @@ contract Election {
             }
             else if(higherNote < candidates[i].getAvgNote()){
                 delete winners;
+                higherNote = candidates[i].getAvgNote();
                 winners.push(i);
             }
         }

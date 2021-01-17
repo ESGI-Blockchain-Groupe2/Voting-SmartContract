@@ -3,9 +3,11 @@ pragma solidity >= 0.7.0 < 0.8.0;
 pragma experimental ABIEncoderV2;
 
 import "truffle/Assert.sol";
+
 import "../contracts/ElectionFactory.sol";
 
 contract TestElectionFactory {
+
 
     ElectionFactory internal electionFactory;
     string[] namesList;
@@ -14,6 +16,7 @@ contract TestElectionFactory {
     function beforeEach() public {
         electionFactory = new ElectionFactory();
     }
+
 
     function test_election_creation() public {
 
@@ -72,17 +75,22 @@ contract TestElectionFactory {
         delete namesList;
         delete namesList2;
 
+
         namesList.push("George H. W. Bush");
         namesList.push("Bill Clinton");
         namesList.push("Ross Perot");
+
 
         namesList2.push("Titi");
         namesList2.push("Gros");
         namesList2.push("Minet");
 
+
         electionFactory._createElection("USA president election", namesList);
         electionFactory._createElection("Titi et gros minet", namesList2);
 
+
         Assert.equal(int(electionFactory._getElections().length), int(2), "Should return the right election");
+
     }
 }

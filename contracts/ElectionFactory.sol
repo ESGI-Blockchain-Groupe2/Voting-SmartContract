@@ -34,6 +34,7 @@ contract ElectionFactory is Ownable {
         listAdmin[userAddress] = false;
     }
 
+
     function isUserAdmin(address userAddress) external view returns(bool){
         return listAdmin[userAddress];
     }
@@ -53,8 +54,9 @@ contract ElectionFactory is Ownable {
         uint electionId = elections.length;
         
         electionToOwner[electionId] = msg.sender;
+
         ownerElectionCount[msg.sender] += 1;
-        emit NewElection(electionId);
+        emit NewElection(electionId);*/
     }
 
     function _endElection(uint id) external isAdmin(msg.sender) {

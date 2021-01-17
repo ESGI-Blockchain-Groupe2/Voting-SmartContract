@@ -21,8 +21,12 @@ contract Candidate {
         return name;
     }
 
-    function addNotes(uint note) public {
+    function addNote(uint note) public {
         notes[note]++;
+    }
+
+    function getNote(uint choice) public view returns (uint) {
+        return notes[choice];
     }
 
     function getAvgNote() public view returns(uint){
@@ -33,7 +37,12 @@ contract Candidate {
         return percent;
     }
 
-    function calculatePercent(uint totalVoters, uint note) public view returns (uint){
+    function getNumberVoteForNote(uint note) public view returns(uint){
+        return notes[note];
+    }
+
+
+    function calculatePercent(uint totalVoters, uint note) public view returns(uint){
         uint numberNote = notes[note] * 100;
         uint newPercent = numberNote / totalVoters;
         return newPercent;
@@ -44,12 +53,12 @@ contract Candidate {
             averageNote = 0;
         }
         else {
-            for (uint i = choiceCount - 1; percent <= 50; i--){
-                percent = percent + calculatePercent(totalVoters, i);
-                if(percent >= 50){
-                    averageNote = i;
-                }
+          for (uint i = choiceCount - 1; percent <= 50; i--){
+            percent = percent + calculatePercent(totalVoters, i);
+            if(percent >= 50){
+                averageNote = i;
             }
+          }
         }
     }
 }
