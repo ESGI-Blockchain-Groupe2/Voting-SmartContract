@@ -19,9 +19,9 @@ contract TestCandidate {
     }
 
     function initCandidateWithNote() public {
-        candidate.addNotes(5);
-        candidate.addNotes(6);
-        candidate.addNotes(3);
+        candidate.addNote(5);
+        candidate.addNote(6);
+        candidate.addNote(3);
     }
 
     function testGetNumberNote() public {

@@ -56,7 +56,7 @@ contract ElectionFactory is Ownable {
         electionToOwner[electionId] = msg.sender;
 
         ownerElectionCount[msg.sender] += 1;
-        emit NewElection(electionId);*/
+        emit NewElection(electionId);
     }
 
     function _endElection(uint id) external isAdmin(msg.sender) {

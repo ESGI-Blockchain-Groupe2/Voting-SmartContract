@@ -69,6 +69,7 @@ contract Election {
 
     function getNumberOfCandidates() public view returns (uint) {
         return candidates.length;
+    }
 
     function getWinner() public view returns (uint){
         return winner;

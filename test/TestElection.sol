@@ -31,23 +31,23 @@ contract TestElection {
         election.addCandidate(candidateName3);
 
         // First voter
-        election.getCandidate(0).addNotes(6);
-        election.getCandidate(1).addNotes(3);
-        election.getCandidate(2).addNotes(1);
+        election.getCandidate(0).addNote(6);
+        election.getCandidate(1).addNote(3);
+        election.getCandidate(2).addNote(1);
 
         election.incrementVoters();
 
         // Second voter
-        election.getCandidate(0).addNotes(5);
-        election.getCandidate(1).addNotes(6);
-        election.getCandidate(2).addNotes(3);
+        election.getCandidate(0).addNote(5);
+        election.getCandidate(1).addNote(6);
+        election.getCandidate(2).addNote(3);
 
         election.incrementVoters();
 
         // Third voter
-        election.getCandidate(0).addNotes(2);
-        election.getCandidate(1).addNotes(2);
-        election.getCandidate(2).addNotes(2);
+        election.getCandidate(0).addNote(2);
+        election.getCandidate(1).addNote(2);
+        election.getCandidate(2).addNote(2);
 
         election.incrementVoters();
     }
@@ -61,21 +61,21 @@ contract TestElection {
         election.addCandidate(candidateName2);
         election.addCandidate(candidateName3);
 
-        election.getCandidate(0).addNotes(5);
-        election.getCandidate(1).addNotes(5);
-        election.getCandidate(2).addNotes(2);
+        election.getCandidate(0).addNote(5);
+        election.getCandidate(1).addNote(5);
+        election.getCandidate(2).addNote(2);
 
         election.incrementVoters();
 
-        election.getCandidate(0).addNotes(5);
-        election.getCandidate(1).addNotes(6);
-        election.getCandidate(2).addNotes(2);
+        election.getCandidate(0).addNote(5);
+        election.getCandidate(1).addNote(6);
+        election.getCandidate(2).addNote(2);
 
         election.incrementVoters();
 
-        election.getCandidate(0).addNotes(3);
-        election.getCandidate(1).addNotes(3);
-        election.getCandidate(2).addNotes(4);
+        election.getCandidate(0).addNote(3);
+        election.getCandidate(1).addNote(3);
+        election.getCandidate(2).addNote(4);
 
         election.incrementVoters();
     }
