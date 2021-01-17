@@ -50,8 +50,34 @@ contract TestElection {
         election.getCandidate(2).addNotes(2);
 
         election.incrementVoters();
-        
-        
+    }
+
+    function initElectionWithVoteDraw() public {
+        string memory candidateName1 = "Candidat 1";
+        string memory candidateName2 = "Candidate 2";
+        string memory candidateName3 = "Candidate 3";
+
+        election.addCandidate(candidateName1);
+        election.addCandidate(candidateName2);
+        election.addCandidate(candidateName3);
+
+        election.getCandidate(0).addNotes(5);
+        election.getCandidate(1).addNotes(5);
+        election.getCandidate(2).addNotes(2);
+
+        election.incrementVoters();
+
+        election.getCandidate(0).addNotes(5);
+        election.getCandidate(1).addNotes(6);
+        election.getCandidate(2).addNotes(2);
+
+        election.incrementVoters();
+
+        election.getCandidate(0).addNotes(3);
+        election.getCandidate(1).addNotes(3);
+        election.getCandidate(2).addNotes(4);
+
+        election.incrementVoters();
     }
 
     function testComputeCandidateAverageNote() public {
@@ -97,6 +123,42 @@ contract TestElection {
         election.computeResult();
         uint winner = election.getWinner();
         Assert.equal(winner, 0, "should return election winner index");
+    }
+
+    function testAverageNoteElectionDraw1() public {
+        initElectionWithVoteDraw();
+        election.computeCandidateAverageNote();
+        uint avgNote = election.getCandidate(0).getAvgNote();
+        Assert.equal(avgNote, 5, "avgNote should be 5");
+    }
+
+    function testAverageNoteElectionDraw2() public {
+        initElectionWithVoteDraw();
+        election.computeCandidateAverageNote();
+        uint avgNote = election.getCandidate(1).getAvgNote();
+        Assert.equal(avgNote, 5, "avgNote should be 5");
+    }
+
+    function testAverageNoteElectionDraw3() public {
+        initElectionWithVoteDraw();
+        election.computeCandidateAverageNote();
+        uint avgNote = election.getCandidate(2).getAvgNote();
+        Assert.equal(avgNote, 2, "avgNote should be 2");
+    }
+
+    function testComputeFirstRoundWinnersWithDraw() public {
+        initElectionWithVoteDraw();
+        election.computeCandidateAverageNote();
+        election.computeFirstRoundWinners();
+        uint[] memory winners = election.getFirstRoundWinners();
+        Assert.equal(winners.length, 2, "We should have 2 first round winner");
+    }
+
+    function testComputeResultWithDraw() public {
+        initElectionWithVoteDraw();
+        election.computeResult();
+        uint winner = election.getWinner();
+        Assert.equal(winner, 0, "should return election winner");
     }
 
     

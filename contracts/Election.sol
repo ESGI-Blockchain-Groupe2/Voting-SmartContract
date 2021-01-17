@@ -87,11 +87,12 @@ contract Election {
     function computeFirstRoundWinners() public {
         uint higherNote = 0;
         for(uint i = 0; i < candidates.length; i++){
-            if(higherNote <= candidates[i].getAvgNote()){
+            if(higherNote == candidates[i].getAvgNote()){
                 winners.push(i);
             }
             else if(higherNote < candidates[i].getAvgNote()){
                 delete winners;
+                higherNote = candidates[i].getAvgNote();
                 winners.push(i);
             }
         }
