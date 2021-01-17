@@ -33,9 +33,19 @@ contract Candidate {
         return percent;
     }
 
+    function getNumberVoteForNote(uint note) public view returns(uint){
+        return notes[note];
+    }
+
+    function calculatePercent(uint totalVoters, uint note) public returns(uint){
+        uint numberNote = notes[note] * 100;
+        uint newPercent = numberNote / totalVoters;
+        return newPercent;
+    }
+
     function computeAverageNote(uint totalVoters) public {
-        for (uint i = choiceCount; i > 0 && percent <= 50; i++){
-            percent = percent + ((notes[i] / totalVoters) * 100);
+        for (uint i = choiceCount - 1; percent <= 50; i--){
+            percent = percent + calculatePercent(totalVoters, i);
             if(percent >= 50){
                 averageNote = i;
             }
