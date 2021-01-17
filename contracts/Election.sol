@@ -57,10 +57,8 @@ contract Election {
     }
 
     function computeResult() public {
-        for (uint i = 0; i < candidates.length; i++){
-            candidates[i].computeAverageNote(totalVoters);
-        }
-
+        computeCandidateAverageNote();
+        
         computeFirstRoundWinners();
 
         if(winners.length > 1){
@@ -68,6 +66,12 @@ contract Election {
         }
         else {
             winner = winners[0];
+        }
+    }
+
+    function computeCandidateAverageNote() public {
+        for (uint i = 0; i < candidates.length; i++){
+            candidates[i].computeAverageNote(totalVoters);
         }
     }
 

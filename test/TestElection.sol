@@ -35,26 +35,41 @@ contract TestElection {
         election.getCandidate(1).addNotes(3);
         election.getCandidate(2).addNotes(1);
 
+        election.incrementVoters();
+
         // Second voter
         election.getCandidate(0).addNotes(5);
         election.getCandidate(1).addNotes(6);
         election.getCandidate(2).addNotes(3);
 
+        election.incrementVoters();
+        
         // Third voter
         election.getCandidate(0).addNotes(2);
         election.getCandidate(1).addNotes(2);
         election.getCandidate(2).addNotes(2);
+
+        election.incrementVoters();
         
+        
+    }
+
+    function testComputeCandidateAverageNote() public {
+        initElectionWithVote();
+        election.computeCandidateAverageNote();
     }
 
     function testComputeFirstRoundWinners() public {
         initElectionWithVote();
+        election.computeCandidateAverageNote();
         election.computeFirstRoundWinners();
     }
 
     function testComputeFinalRoundWinner() public {
         initElectionWithVote();
-        election.computeFirstRoundWinners();
+        election.computeCandidateAverageNote();
+        election.computeFinalRoundWinner();
+        election.computeFinalRoundWinner();
     }
 
     function testComputeResultWithoutDraw() public {
