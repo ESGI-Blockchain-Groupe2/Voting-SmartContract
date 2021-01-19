@@ -66,7 +66,7 @@ contract ElectionFactory is Ownable {
         elections[_electionId].candidates[elections[_electionId].candidatesCount++].name = _candidateName;
     }
 
-    function _createElection(string calldata _title, string[] calldata _candidatesNames) external isAdmin(msg.sender) {
+    function _createElection(string calldata _title, string[] calldata _candidatesNames) external isAdmin(msg.sender) returns (uint) {
         uint nbCandidates = _candidatesNames.length;
         electionsCount++;
         Election storage election = elections[electionsCount];
@@ -83,5 +83,7 @@ contract ElectionFactory is Ownable {
         electionToOwner[electionsCount] = msg.sender;
 
         ownerElectionCount[msg.sender] += 1;
+
+        return electionsCount;
     }
 }

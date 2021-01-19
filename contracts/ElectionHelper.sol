@@ -9,12 +9,8 @@ import "./ElectionFactory.sol";
 
 contract ElectionHelper is ElectionFactory, CandidateHelper {
     function endElection(uint _electionId) external isAdmin(msg.sender) {
-        closeElection(_electionId);
-        computeResult(_electionId);
-    }
-
-    function closeElection(uint _electionId) public {
         elections[_electionId].isOpen = false;
+        computeResult(_electionId);
     }
 
     function incrementVoters(uint _electionId) public {
@@ -50,7 +46,7 @@ contract ElectionHelper is ElectionFactory, CandidateHelper {
 
     function computeCandidatesAverageNote(uint _electionId) public {
         for (uint i = 0; i < elections[_electionId].candidatesCount; i++){
-            computeAverageNote(_electionId, i, elections[_electionId].totalVoters);
+            computeAverageNote(_electionId, i);
         }
     }
 

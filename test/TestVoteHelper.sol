@@ -5,8 +5,9 @@ import "truffle/Assert.sol";
 import "../contracts/ElectionHelper.sol";
 import "../contracts/CandidateHelper.sol";
 import "../contracts/VoteHelper.sol";
+import "../contracts/ElectionFactory.sol";
 
-contract TestVoteFactory {
+contract TestVoteHelper {
     VoteHelper internal voteFactory;
     Election public election;
     //Candidate[] public candidates;

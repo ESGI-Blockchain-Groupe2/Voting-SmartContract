@@ -7,9 +7,7 @@ import "../contracts/CandidateHelper.sol";
 import "../contracts/VoteHelper.sol";
 import "truffle/Assert.sol";
 
-contract TestElection {
-
-    Election public election;
+contract TestElectionHelper {
 
     function beforeEach() public {
         election = new Election("Test Election", block.timestamp, 1 days + uint32(block.timestamp));
@@ -19,6 +17,16 @@ contract TestElection {
         string memory candidatName = "Candidat Test";
         election.addCandidate(candidatName);
         Assert.equal(election[0].name, candidatName, "Candidate should be added to the list");
+    }
+
+    function test_end_election() public {
+        string[] namesList = ["George H. W. Bush", "Bill Clinton", "Ross Perot"];
+
+        uint electionId = _createElection("USA president election", namesList);
+
+        endElection(electionId);
+
+        Assert.equal(elections[electionId].isOpen, false, "Election should be closed");
     }
 
     function initElectionWithVote() public {

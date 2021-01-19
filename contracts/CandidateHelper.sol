@@ -11,21 +11,21 @@ contract CandidateHelper is ElectionFactory {
         //notes[note]++;
     }
 
-    function calculatePercent(uint _electionId, uint _candidateId, uint _totalVoters, uint _note) public view returns(uint){
+    function calculatePercent(uint _electionId, uint _candidateId, uint _note) public view returns(uint){
         uint notes = elections[_electionId].candidates[_candidateId].notes[_note];
         uint numberNote = notes * 100;
-        uint newPercent = numberNote / _totalVoters;
+        uint newPercent = numberNote / elections[_electionId].totalVoters;
         return newPercent;
     }
 
-    function computeAverageNote(uint _electionId, uint _candidateId, uint _totalVoters) public {
-        if (_totalVoters == 0) {
+    function computeAverageNote(uint _electionId, uint _candidateId) public {
+        if (elections[_electionId].totalVoters == 0) {
             elections[_electionId].candidates[_candidateId].averageNote = 0;
         }
         else {
             uint percent = elections[_electionId].candidates[_candidateId].percent;
             for (uint i = 6; percent <= 50; i--){
-                elections[_electionId].candidates[_candidateId].percent = percent + calculatePercent(_electionId, _candidateId, _totalVoters, i);
+                elections[_electionId].candidates[_candidateId].percent = percent + calculatePercent(_electionId, _candidateId, i);
                 if(percent >= 50){
                     elections[_electionId].candidates[_candidateId].averageNote = i;
                 }
