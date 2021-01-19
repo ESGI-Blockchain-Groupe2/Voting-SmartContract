@@ -2,9 +2,9 @@
 pragma solidity >= 0.7.0 < 0.8.0;
 pragma experimental ABIEncoderV2;
 
-import "../contracts/Election.sol";
-import "../contracts/Candidate.sol";
-import "../contracts/VoteFactory.sol";
+import "../contracts/ElectionHelper.sol";
+import "../contracts/CandidateHelper.sol";
+import "../contracts/VoteHelper.sol";
 import "truffle/Assert.sol";
 
 contract TestElection {
@@ -18,7 +18,7 @@ contract TestElection {
     function testAddCandidate() public {
         string memory candidatName = "Candidat Test";
         election.addCandidate(candidatName);
-        Assert.equal(election.getCandidate(0).getName(), candidatName, "Candidate should be added to the list");
+        Assert.equal(election[0].name, candidatName, "Candidate should be added to the list");
     }
 
     function initElectionWithVote() public {
@@ -82,28 +82,28 @@ contract TestElection {
 
     function testComputeCandidateAverageNote() public {
         initElectionWithVote();
-        election.computeCandidateAverageNote();
+        election.computeCandidatesAverageNote();
         uint avgNote = election.getCandidate(0).getAvgNote();
         Assert.equal(avgNote, 5, "Candidate 1 should have average note of 5");
     }
 
     function testComputeCandidate2AverageNote() public {
         initElectionWithVote();
-        election.computeCandidateAverageNote();
+        election.computeCandidatesAverageNote();
         uint avgNote = election.getCandidate(1).getAvgNote();
         Assert.equal(avgNote, 3, "Candidate 2 should have average note of 3");
     }
 
     function testComputeCandidate3AverageNote() public {
         initElectionWithVote();
-        election.computeCandidateAverageNote();
+        election.computeCandidatesAverageNote();
         uint avgNote = election.getCandidate(2).getAvgNote();
         Assert.equal(avgNote, 2, "Candidate 3 should have average note of 2");
     }
 
     function testComputeFirstRoundWinnersWithoutDraw() public {
         initElectionWithVote();
-        election.computeCandidateAverageNote();
+        election.computeCandidatesAverageNote();
         election.computeFirstRoundWinners();
         uint[] memory winners = election.getFirstRoundWinners();
         Assert.equal(winners[0], 0, "First round winner should be candidate 1 with average note of 5");
@@ -111,7 +111,7 @@ contract TestElection {
 
     function testComputeFinalRoundWinner() public {
         initElectionWithVote();
-        election.computeCandidateAverageNote();
+        election.computeCandidatesAverageNote();
         election.computeFirstRoundWinners();
         election.computeFinalRoundWinner();
         uint winner = election.getWinner();
@@ -127,28 +127,28 @@ contract TestElection {
 
     function testAverageNoteElectionDraw1() public {
         initElectionWithVoteDraw();
-        election.computeCandidateAverageNote();
+        election.computeCandidatesAverageNote();
         uint avgNote = election.getCandidate(0).getAvgNote();
         Assert.equal(avgNote, 5, "avgNote should be 5");
     }
 
     function testAverageNoteElectionDraw2() public {
         initElectionWithVoteDraw();
-        election.computeCandidateAverageNote();
+        election.computeCandidatesAverageNote();
         uint avgNote = election.getCandidate(1).getAvgNote();
         Assert.equal(avgNote, 5, "avgNote should be 5");
     }
 
     function testAverageNoteElectionDraw3() public {
         initElectionWithVoteDraw();
-        election.computeCandidateAverageNote();
+        election.computeCandidatesAverageNote();
         uint avgNote = election.getCandidate(2).getAvgNote();
         Assert.equal(avgNote, 2, "avgNote should be 2");
     }
 
     function testComputeFirstRoundWinnersWithDraw() public {
         initElectionWithVoteDraw();
-        election.computeCandidateAverageNote();
+        election.computeCandidatesAverageNote();
         election.computeFirstRoundWinners();
         uint[] memory winners = election.getFirstRoundWinners();
         Assert.equal(winners.length, 2, "We should have 2 first round winner");

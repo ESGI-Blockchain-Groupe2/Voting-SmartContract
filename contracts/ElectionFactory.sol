@@ -3,8 +3,6 @@ pragma solidity >= 0.7.0 < 0.8.0;
 pragma experimental ABIEncoderV2;
 
 import "./ownable.sol";
-import "./Election.sol";
-import "./VoteFactory.sol";
 
 contract ElectionFactory is Ownable {
     constructor (){
@@ -15,7 +13,29 @@ contract ElectionFactory is Ownable {
 
     event NewElection(uint id);
 
-    Election[] elections;
+    struct Election {
+        string title;
+        uint256 creationDate;
+        uint256 expiresAfter;
+        uint totalVoters;
+        bool isOpen;
+
+        uint candidatesCount;
+        mapping (uint => Candidate) candidates;
+        mapping (address => bool) voters;
+        uint[] winners;
+        uint winner;
+    }
+
+    struct Candidate {
+        string name;
+        mapping (uint => uint) notes;
+        uint percent;
+        uint averageNote;
+    }
+    uint electionsCount;
+    mapping (uint => Election) elections;
+    //Election[] public elections;
 
     mapping (uint => address) electionToOwner;
     mapping (address => uint) ownerElectionCount;
@@ -26,12 +46,12 @@ contract ElectionFactory is Ownable {
         _;
     }
 
-    function _addAdmin(address userAddress) private isAdmin(msg.sender) {
-        listAdmin[userAddress]= true;
+    function _addAdmin(address _userAddress) private isAdmin(msg.sender) {
+        listAdmin[_userAddress]= true;
     }
 
-    function _deleteAdmin(address userAddress) private isAdmin(msg.sender) {
-        listAdmin[userAddress] = false;
+    function _deleteAdmin(address _userAddress) private isAdmin(msg.sender) {
+        listAdmin[_userAddress] = false;
     }
 
 
@@ -39,38 +59,29 @@ contract ElectionFactory is Ownable {
         return listAdmin[userAddress];
     }
 
+    /*
+     * ElectionHelper.sol
+     */
+    function addCandidate(uint _electionId, string calldata _candidateName) public {
+        elections[_electionId].candidates[elections[_electionId].candidatesCount++].name = _candidateName;
+    }
+
     function _createElection(string calldata _title, string[] calldata _candidatesNames) external isAdmin(msg.sender) {
         uint nbCandidates = _candidatesNames.length;
-
-        
-        Election election = new Election(_title, block.timestamp, expiration);
-
+        electionsCount++;
+        Election storage election = elections[electionsCount];
+        election.title = _title;
+        election.creationDate = block.timestamp;
+        election.expiresAfter = expiration;
+        election.totalVoters = 0;
+        election.isOpen = true;
 
         for (uint i = 0; i < nbCandidates; i++) {
-            election.addCandidate(_candidatesNames[i]);
+            addCandidate(electionsCount, _candidatesNames[i]);
         }
 
-        elections.push(election);
-        uint electionId = elections.length;
-        
-        electionToOwner[electionId] = msg.sender;
+        electionToOwner[electionsCount] = msg.sender;
 
         ownerElectionCount[msg.sender] += 1;
-        emit NewElection(electionId);
-    }
-
-    function _endElection(uint id) external isAdmin(msg.sender) {
-        elections[id].closeElection();
-        elections[id].computeResult();
-    }
-
-
-    function _getElections() external view returns (Election[] memory) {
-        return elections;
-    }
-
-
-    function _getElection(uint id) external view returns (Election) {
-        return elections[id];
     }
 }

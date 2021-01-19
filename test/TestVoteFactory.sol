@@ -2,12 +2,12 @@
 pragma solidity >= 0.7.0 < 0.8.0;
 
 import "truffle/Assert.sol";
-import "../contracts/Election.sol";
-import "../contracts/Candidate.sol";
-import "../contracts/VoteFactory.sol";
+import "../contracts/ElectionHelper.sol";
+import "../contracts/CandidateHelper.sol";
+import "../contracts/VoteHelper.sol";
 
 contract TestVoteFactory {
-    VoteFactory internal voteFactory;
+    VoteHelper internal voteFactory;
     Election public election;
     //Candidate[] public candidates;
     uint[] notes;
@@ -42,7 +42,7 @@ contract TestVoteFactory {
 
     function checkIfNotesAreAdded(uint[] memory notesSupposedlyAdded, Election _election) internal view returns (bool) {
         for (uint i; i < election.getNumberOfCandidates(); i++) {
-            if (_election.getCandidate(i).getNote(notesSupposedlyAdded[i]) != 1) {
+            if (elections.cand.getCandidate(i).getNote(notesSupposedlyAdded[i]) != 1) {
                 return false;
             }
         }

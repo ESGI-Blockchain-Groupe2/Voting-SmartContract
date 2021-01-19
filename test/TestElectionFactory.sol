@@ -30,9 +30,9 @@ contract TestElectionFactory {
         Election[] memory electionList = electionFactory._getElections();
 
         Assert.equal(string(electionList[0].getTitle()), string("USA president election"), "Title of the first election should be USA president election");
-        Assert.equal(string(electionList[0].getCandidates()[0].getName()), string(namesList[0]), "First candidate sould be George H. W. Bush");
-        Assert.equal(string(electionList[0].getCandidates()[1].getName()), string(namesList[1]), "Second candidate sould be Bill Clinton");
-        Assert.equal(string(electionList[0].getCandidates()[2].getName()), string(namesList[2]), "Third candidate sould be Ross Perot");
+        Assert.equal(string(elections[0].candidates[0].name), string(namesList[0]), "First candidate sould be George H. W. Bush");
+        Assert.equal(string(elections[0].candidates[1].name), string(namesList[1]), "Second candidate sould be Bill Clinton");
+        Assert.equal(string(elections[0].candidates[2].name), string(namesList[2]), "Third candidate sould be Ross Perot");
     }
 
     function test_end_election() public {
@@ -45,7 +45,7 @@ contract TestElectionFactory {
 
         electionFactory._endElection(0);
 
-        Assert.equal(electionFactory._getElection(0).getIsOpen(), false, "test");
+        Assert.equal(electionFactory._getElection(0).getStatus(), false, "test");
 
     }
 
@@ -65,9 +65,9 @@ contract TestElectionFactory {
         electionFactory._createElection("USA president election", namesList);
         electionFactory._createElection("Titi et gros minet", namesList2);
 
-        Assert.equal(string(electionFactory._getElection(1).getTitle()), string("Titi et gros minet"), "Should return the right election");
-        Assert.equal(string(electionFactory._getElection(1).getCandidates()[0].getName()), string("Titi"), "Should return the right candidate name");
-        Assert.equal(string(electionFactory._getElection(0).getCandidates()[0].getName()), string("George H. W. Bush"), "Should return the right candidate name");
+        Assert.equal(string(elections[1].name), string("Titi et gros minet"), "Should return the right election");
+        Assert.equal(string(elections[1].candidates[0].name), string("Titi"), "Should return the right candidate name");
+        Assert.equal(string(elections[0].candidates[0].name), string("George H. W. Bush"), "Should return the right candidate name");
     }
 
     function test_get_elections() public {
