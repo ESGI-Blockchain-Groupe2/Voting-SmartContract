@@ -18,10 +18,10 @@ contract TestVoteHelper {
         namesList.push("Candidate 3");
 
         voteContract = new VoteHelper();
-        electionId = voteContract._createElection("TestElection", namesList);
+        electionId = voteContract.createElection("TestElection", namesList);
    }
 
-    function addSixCandidates() internal {
+    function _addSixCandidates() internal {
         voteContract.addCandidate(electionId, "Jean");
         voteContract.addCandidate(electionId, "Michelle");
         voteContract.addCandidate(electionId, "Norah");
@@ -30,7 +30,7 @@ contract TestVoteHelper {
         voteContract.addCandidate(electionId, "Pierre");
     }
 
-    function generateVotesForElection() internal view returns (uint[] memory) {
+    function _generateVotesForElection() internal view returns (uint[] memory) {
         uint[] memory generatedNotes = new uint[](voteContract.getCandidatesCount(electionId));
         for (uint i = 0; i < voteContract.getCandidatesCount(electionId); i++) {
             uint256 generatedNote = uint(keccak256(abi.encodePacked(block.timestamp, msg.sender))) % 7;
@@ -39,7 +39,7 @@ contract TestVoteHelper {
         return generatedNotes;
     }
 
-     function checkIfNotesAreAdded(uint[] memory notesSupposedlyAdded) internal view returns (bool) {
+     function _checkIfNotesAreAdded(uint[] memory notesSupposedlyAdded) internal view returns (bool) {
          for (uint i; i < voteContract.getCandidatesCount(electionId); i++) {
              if (voteContract.getCandidateNote(electionId, i, notesSupposedlyAdded[i]) != 1) {
                  return false;
@@ -49,9 +49,9 @@ contract TestVoteHelper {
      }
 
     function test_WhenUserHasVoted_HasAlreadyVotedReturnsTrue() public {
-        addSixCandidates();
-        uint[] memory generatedNotes = generateVotesForElection();
-        voteContract._voteToElection(electionId, generatedNotes);
+        _addSixCandidates();
+        uint[] memory generatedNotes = _generateVotesForElection();
+        voteContract.voteToElection(electionId, generatedNotes);
         Assert.equal(voteContract.hasAlreadyVoted(electionId), true, "This user already voted");
     }
 
@@ -60,12 +60,12 @@ contract TestVoteHelper {
     }
 
     function test_WhenUserHasVoted_NotesAreAddedToCandidates() public {
-        addSixCandidates();
-        uint[] memory generatedNotes = generateVotesForElection();
+        _addSixCandidates();
+        uint[] memory generatedNotes = _generateVotesForElection();
 
-        voteContract._voteToElection(electionId, generatedNotes);
+        voteContract.voteToElection(electionId, generatedNotes);
 
-        bool notesAreAdded = checkIfNotesAreAdded(generatedNotes);
+        bool notesAreAdded = _checkIfNotesAreAdded(generatedNotes);
         Assert.equal(bool(notesAreAdded), bool(true), "Notes should be added to candidates");
     }
 }

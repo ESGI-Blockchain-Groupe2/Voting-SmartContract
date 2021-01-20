@@ -1,5 +1,5 @@
-const HelloWorld = artifacts.require("HelloWorld");
+const VoteContract = artifacts.require("VoteHelper");
 
 module.exports = function(deployer) {
-    deployer.deploy(HelloWorld);
+    deployer.deploy(VoteContract, "Hello world from VoteContract");
 };

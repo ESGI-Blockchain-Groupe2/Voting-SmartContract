@@ -10,7 +10,7 @@ contract CandidateHelper is ElectionFactory {
         elections[_electionId].candidates[_candidateId].notes[_noteId] ++;
     }
 
-    function getCandidatesCount(uint _electionId) public view returns (uint) {
+    function getCandidatesCount(uint _electionId) external view returns (uint) {
         return elections[_electionId].candidatesCount;
     }
 
@@ -18,11 +18,11 @@ contract CandidateHelper is ElectionFactory {
         return elections[_electionId].candidates[_candidateId].notes[_noteId];
     }
 
-    function getCandidateAverageNote(uint _electionId, uint _candidateId) public view returns (uint) {
+    function getCandidateAverageNote(uint _electionId, uint _candidateId) external view returns (uint) {
         return elections[_electionId].candidates[_candidateId].averageNote;
     }
 
-    function calculatePercent(uint _electionId, uint _candidateId, uint _note) public view returns(uint){
+    function calculatePercentageOfNote(uint _electionId, uint _candidateId, uint _note) external view returns(uint){
         uint note = elections[_electionId].candidates[_candidateId].notes[_note];
         uint numberNote = note * 100;
         uint totalVoters = elections[_electionId].totalVoters;
@@ -38,7 +38,7 @@ contract CandidateHelper is ElectionFactory {
         }
         else {
             for (uint i = 6; elections[_electionId].candidates[_candidateId].percent <= 50; i--){
-                elections[_electionId].candidates[_candidateId].percent = elections[_electionId].candidates[_candidateId].percent + calculatePercent(_electionId, _candidateId, i);
+                elections[_electionId].candidates[_candidateId].percent = elections[_electionId].candidates[_candidateId].percent + this.calculatePercentageOfNote(_electionId, _candidateId, i);
                 if(elections[_electionId].candidates[_candidateId].percent >= 50){
                     elections[_electionId].candidates[_candidateId].averageNote = i;
                 }

@@ -46,11 +46,11 @@ contract ElectionFactory is Ownable {
         _;
     }
 
-    function _addAdmin(address _userAddress) private isAdmin(msg.sender) {
+    function addAdmin(address _userAddress) external isAdmin(msg.sender) {
         listAdmin[_userAddress]= true;
     }
 
-    function _deleteAdmin(address _userAddress) private isAdmin(msg.sender) {
+    function deleteAdmin(address _userAddress) external isAdmin(msg.sender) {
         listAdmin[_userAddress] = false;
     }
 
@@ -66,7 +66,11 @@ contract ElectionFactory is Ownable {
         elections[_electionId].candidates[elections[_electionId].candidatesCount++].name = _candidateName;
     }
 
-    function _createElection(string memory _title, string[] memory _candidatesNames) external isAdmin(msg.sender) returns (uint) {
+    function getElectionsCount() external view returns (uint) {
+        return electionsCount;
+    }
+
+    function createElection(string memory _title, string[] memory _candidatesNames) external isAdmin(msg.sender) returns (uint) {
         uint nbCandidates = _candidatesNames.length;
         electionsCount++;
         Election storage election = elections[electionsCount];
@@ -95,7 +99,7 @@ contract ElectionFactory is Ownable {
         return elections[_electionId].title;
     }
 
-    function getCandidateName(uint _electionId, uint _candidateId) public view returns (string memory) {
+    function getCandidateName(uint _electionId, uint _candidateId) external view returns (string memory) {
         return elections[_electionId].candidates[_candidateId].name;
     }
 }

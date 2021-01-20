@@ -17,7 +17,7 @@ contract TestElectionHelper {
         namesList.push("Candidate 3");
 
         voteContract = new ElectionHelper();
-        electionId = voteContract._createElection("Test Election", namesList);
+        electionId = voteContract.createElection("Test Election", namesList);
     }
 
     function test_end_election() public {

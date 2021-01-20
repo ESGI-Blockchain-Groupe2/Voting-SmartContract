@@ -19,7 +19,7 @@ contract VoteHelper is CandidateHelper, ElectionHelper {
     /**
      * Gives one note to each candidates of the election
      */
-    function _voteToElection(uint _electionId, uint[] calldata _notes) external hasNotVoted(_electionId) {
+    function voteToElection(uint _electionId, uint[] calldata _notes) external hasNotVoted(_electionId) {
         require(elections[_electionId].candidatesCount == _notes.length, "Not same amount of candidates and votes");
         for (uint i = 0; i < elections[_electionId].candidatesCount; i++){
             addNote(_electionId, i, _notes[i]);

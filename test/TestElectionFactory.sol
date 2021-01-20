@@ -28,7 +28,7 @@ contract TestElectionFactory {
     }
 
     function test_election_creation() public {
-        uint electionId = voteContract._createElection("USA president election", namesList);
+        uint electionId = voteContract.createElection("USA president election", namesList);
 
         Assert.equal(string(voteContract.getElectionTitle(electionId)), string("USA president election"), "Title of the first election should be USA president election");
         Assert.equal(string(voteContract.getCandidateName(electionId, 0)), string(namesList[0]), "First candidate sould be George H. W. Bush");
@@ -37,7 +37,7 @@ contract TestElectionFactory {
     }
 
     function testAddCandidate() public {
-        uint electionId = voteContract._createElection("USA president election", namesList);
+        uint electionId = voteContract.createElection("USA president election", namesList);
 
         voteContract.addCandidate(electionId, "Candidat Test");
         Assert.equal(string(voteContract.getCandidateName(electionId, 3)), string("Candidat Test"), "Candidate should be added to the list");
@@ -46,8 +46,8 @@ contract TestElectionFactory {
     function test_candidates_names() public {
         generateSecondNameList();
 
-        uint firstElectionId = voteContract._createElection("USA president election", namesList);
-        uint secondElectionId = voteContract._createElection("Titi et gros minet", namesList2);
+        uint firstElectionId = voteContract.createElection("USA president election", namesList);
+        uint secondElectionId = voteContract.createElection("Titi et gros minet", namesList2);
 
         Assert.equal(string(voteContract.getElectionTitle(secondElectionId)), string("Titi et gros minet"), "Should return the right election");
         Assert.equal(string(voteContract.getCandidateName(secondElectionId, 0)), string("Titi"), "Should return the right candidate name");

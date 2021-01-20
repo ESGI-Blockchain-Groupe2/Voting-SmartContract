@@ -17,7 +17,7 @@ contract ElectionHelper is ElectionFactory, CandidateHelper {
         return elections[_electionId].isOpen;
     }
 
-    function getElectionWinner(uint _electionId) public view returns (uint) {
+    function getElectionWinner(uint _electionId) external view returns (uint) {
         return elections[_electionId].winner;
     }
 

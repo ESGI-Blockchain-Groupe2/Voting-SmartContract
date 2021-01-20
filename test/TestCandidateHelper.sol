@@ -24,11 +24,11 @@ contract TestCandidateHelper {
 
         voteContract = new CandidateHelper();
 
-        electionId = voteContract._createElection("Test election", nameList);
+        electionId = voteContract.createElection("Test election", nameList);
         candidatesCount = voteContract.getCandidatesCount(electionId);
     }
 
-    function voteForCandidates(uint[] memory _notes) internal {
+    function _voteForCandidates(uint[] memory _notes) internal {
         require(candidatesCount == _notes.length, "Not same amount of candidates and votes");
         for (uint candidateId = 0; candidateId < candidatesCount; candidateId ++) {
             voteContract.addNote(electionId, candidateId, _notes[candidateId]);
@@ -45,7 +45,7 @@ contract TestCandidateHelper {
         notes.push(5);
         notes.push(4);
         notes.push(3);
-        voteForCandidates(notes);
+        _voteForCandidates(notes);
         uint result = voteContract.getCandidateNote(electionId, 0, 5);
         Assert.equal(result, 1, "Note 5 should've been chosen once");
     }
@@ -63,12 +63,12 @@ contract TestCandidateHelper {
         notes3.push(2);
         notes3.push(3);
 
-        voteForCandidates(notes);
-        voteForCandidates(notes2);
-        voteForCandidates(notes3);
+        _voteForCandidates(notes);
+        _voteForCandidates(notes2);
+        _voteForCandidates(notes3);
 
         uint candidateId = 0;
-        uint percent = voteContract.calculatePercent(electionId, candidateId, 5);
+        uint percent = voteContract.calculatePercentageOfNote(electionId, candidateId, 5);
         Assert.equal(percent, 33, "Percent of voters voting 5 for candidate Jean");
     }
 
@@ -76,7 +76,7 @@ contract TestCandidateHelper {
         notes.push(5);
         notes.push(4);
         notes.push(6);
-        voteForCandidates(notes);
+        _voteForCandidates(notes);
         voteContract.computeAverageNote(electionId, 0);
         Assert.equal(voteContract.getCandidateAverageNote(electionId, 0), 5, "Candidate average note should be 5");
     }
