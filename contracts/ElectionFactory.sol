@@ -34,7 +34,7 @@ contract ElectionFactory is Ownable {
         uint averageNote;
     }
     uint electionsCount;
-    mapping (uint => Election) elections;
+    mapping (uint => Election) public elections;
     //Election[] public elections;
 
     mapping (uint => address) electionToOwner;
@@ -62,11 +62,11 @@ contract ElectionFactory is Ownable {
     /*
      * ElectionHelper.sol
      */
-    function addCandidate(uint _electionId, string calldata _candidateName) public {
+    function addCandidate(uint _electionId, string memory _candidateName) public {
         elections[_electionId].candidates[elections[_electionId].candidatesCount++].name = _candidateName;
     }
 
-    function _createElection(string calldata _title, string[] calldata _candidatesNames) external isAdmin(msg.sender) returns (uint) {
+    function _createElection(string memory _title, string[] memory _candidatesNames) external isAdmin(msg.sender) returns (uint) {
         uint nbCandidates = _candidatesNames.length;
         electionsCount++;
         Election storage election = elections[electionsCount];

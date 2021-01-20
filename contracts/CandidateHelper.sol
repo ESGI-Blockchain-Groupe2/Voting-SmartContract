@@ -11,6 +11,10 @@ contract CandidateHelper is ElectionFactory {
         //notes[note]++;
     }
 
+
+
+
+
     function calculatePercent(uint _electionId, uint _candidateId, uint _note) public view returns(uint){
         uint notes = elections[_electionId].candidates[_candidateId].notes[_note];
         uint numberNote = notes * 100;

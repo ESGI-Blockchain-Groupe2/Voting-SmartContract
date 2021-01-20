@@ -12,14 +12,19 @@ contract TestElectionFactory is ElectionFactory {
 
     function beforeEach() public {
         delete namesList;
-        delete namesList2;
-    }
-
-    function test_election_creation() public {
         namesList.push("George H. W. Bush");
         namesList.push("Bill Clinton");
         namesList.push("Ross Perot");
+    }
 
+    function generateSecondNameList() public {
+        delete namesList2;
+        namesList2.push("Titi");
+        namesList2.push("Gros");
+        namesList2.push("Minet");
+    }
+
+    function test_election_creation() public {
         uint electionId = this._createElection("USA president election", namesList);
 
         Assert.equal(string(elections[electionId].title), string("USA president election"), "Title of the first election should be USA president election");
@@ -36,13 +41,7 @@ contract TestElectionFactory is ElectionFactory {
     }
 
     function test_candidates_names() public {
-        namesList.push("George H. W. Bush");
-        namesList.push("Bill Clinton");
-        namesList.push("Ross Perot");
-
-        namesList2.push("Titi");
-        namesList2.push("Gros");
-        namesList2.push("Minet");
+        generateSecondNameList();
 
         uint firstElectionId = this._createElection("USA president election", namesList);
         uint secondElectionId = this._createElection("Titi et gros minet", namesList2);

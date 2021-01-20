@@ -12,10 +12,14 @@ contract VoteHelper is CandidateHelper, ElectionHelper {
         _;
     }
 
+    function getCandidateNote(uint _electionId, uint _candidateId, uint _noteId) public view returns (uint) {
+        return elections[_electionId].candidates[_candidateId].notes[_noteId];
+    }
+
     function hasAlreadyVoted(uint _electionId) public view returns (bool) {
         return elections[_electionId].voters[msg.sender];
     }
-    
+
     /**
      * Gives one note to each candidates of the election
      */
