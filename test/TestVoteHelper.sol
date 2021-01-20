@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >= 0.7.0 < 0.8.0;
+pragma experimental ABIEncoderV2;
 
 import "truffle/Assert.sol";
 import "../contracts/ElectionHelper.sol";
@@ -7,68 +8,85 @@ import "../contracts/CandidateHelper.sol";
 import "../contracts/VoteHelper.sol";
 import "../contracts/ElectionFactory.sol";
 
-contract TestVoteHelper {
-    VoteHelper internal voteFactory;
-    Election public election;
-    //Candidate[] public candidates;
-    uint[] notes;
+contract TestVoteHelper is VoteHelper {
+    uint electionId;
+    string[] namesList;
+
     // Run before every test function
     function beforeEach() public {
-        delete election;
-        election = new Election("TestElection", block.timestamp, 15 days);
-        delete voteFactory;
-        voteFactory = new VoteFactory(election);
-        delete notes;
-
+        delete namesList;
+        namesList.push("Candidate 1");
+        namesList.push("Candidate 2");
+        namesList.push("Candidate 3");
+        electionId = this._createElection("TestElection", namesList);
     }
 
-    function generateNotesForElection(Election _election) internal returns (uint[] memory) {
-        uint[] memory generatedNotes = new uint[](_election.getNumberOfCandidates());
-        for (uint i = 0; i < _election.getNumberOfCandidates(); i++) {
+    /*function voteForCandidates(uint[] calldata _notes) internal {
+        require(elections[electionId].candidatesCount == _notes.length, "Not same amount of candidates and votes");
+        for (uint candidateId = 0; candidateId < elections[electionId].candidatesCount; candidateId ++) {
+            addNote(electionId, candidateId, _notes[candidateId]);
+        }
+    }*/
+
+    function addSixCandidates() internal {
+        addCandidate(electionId, "Jean");
+        addCandidate(electionId, "Michelle");
+        addCandidate(electionId, "Norah");
+        addCandidate(electionId, "Alexandre");
+        addCandidate(electionId, "Marc");
+        addCandidate(electionId, "Pierre");
+    }
+
+    /*function generateVotesForElection() internal returns (uint[] memory) {
+        uint[] memory generatedNotes = new uint[](elections[electionId].candidatesCount);
+        for (uint i = 0; i < elections[electionId].candidatesCount; i++) {
             uint256 generatedNote = uint(keccak256(abi.encodePacked(block.timestamp, msg.sender))) % 7;
             generatedNotes[i] = generatedNote;
-            notes.push(generatedNote);
         }
         return generatedNotes;
-    }
+    }*/
 
-    function addSixCandidates(Election _election) internal {
-        _election.addCandidate("Jean");
-        _election.addCandidate("Michelle");
-        _election.addCandidate("Norah");
-        _election.addCandidate("Alexandre");
-        _election.addCandidate("Marc");
-        _election.addCandidate("Pierre");
-    }
-
-    function checkIfNotesAreAdded(uint[] memory notesSupposedlyAdded, Election _election) internal view returns (bool) {
-        for (uint i; i < election.getNumberOfCandidates(); i++) {
-            if (elections.cand.getCandidate(i).getNote(notesSupposedlyAdded[i]) != 1) {
+    function checkIfNotesAreAdded(uint[] memory notesSupposedlyAdded) internal view returns (bool) {
+        for (uint i; i < elections[electionId].candidatesCount; i++) {
+            if (elections[electionId].candidates[i].notes[notesSupposedlyAdded[i]] != 1) {
                 return false;
             }
         }
         return true;
     }
 
-    function test_WhenUserHasVoted_AlreadyVoteReturnsTrue() public {
-        addSixCandidates(election);
-        uint[] memory generatedNotes = generateNotesForElection(election);
-
-        voteFactory._voteToElection(generatedNotes);
-        Assert.equal(election.alreadyVote(), true, "This user already voted");
+    function test_WhenUserHasVoted_HasAlreadyVotedReturnsTrue() public {
+        addSixCandidates();
+        //uint[] memory notes = generateVotesForElection();
+        uint[] memory notes = new uint[](6);
+        notes[0] = 1;
+        notes[1] = 5;
+        notes[2] = 6;
+        notes[3] = 4;
+        notes[4] = 4;
+        notes[5] = 3;
+        this._voteToElection(electionId, notes);
+        Assert.equal(hasAlreadyVoted(electionId), true, "This user already voted");
     }
 
-    function test_WhenUserHasNotVoted_AlreadyVoteReturnsFalse() public {
-        Assert.equal(election.alreadyVote(), false, "This user has not voted");
+    function test_WhenUserHasNotVoted_HasAlreadyVotedReturnsFalse() public {
+        Assert.equal(hasAlreadyVoted(electionId), false, "This user has not voted");
     }
 
     function test_WhenUserHasVoted_NotesAreAddedToCandidates() public {
-        addSixCandidates(election);
-        uint[] memory generatedNotes = generateNotesForElection(election);
+        addSixCandidates();
+        uint[] memory notes = new uint[](6);
+        notes[0] = 1;
+        notes[1] = 5;
+        notes[2] = 6;
+        notes[3] = 4;
+        notes[4] = 4;
+        notes[5] = 3;
+        //uint[] memory generatedNotes = generateVotesForElection();
 
-        voteFactory._voteToElection(generatedNotes);
+        this._voteToElection(electionId, notes);
 
-        bool notesAreAdded = checkIfNotesAreAdded(generatedNotes, election);
+        bool notesAreAdded = checkIfNotesAreAdded(notes);
         Assert.equal(bool(notesAreAdded), bool(true), "Notes should be added to candidates");
 
 

@@ -7,11 +7,15 @@ import "./ElectionHelper.sol";
 
 
 contract VoteHelper is CandidateHelper, ElectionHelper {
-    modifier hasNotVoted(uint _electionId){
-        require (!elections[_electionId].voters[msg.sender], "User has already voted");
+    modifier hasNotVoted(uint _electionId) {
+        require (!hasAlreadyVoted(_electionId), "User has already voted");
         _;
     }
 
+    function hasAlreadyVoted(uint _electionId) public view returns (bool) {
+        return elections[_electionId].voters[msg.sender];
+    }
+    
     /**
      * Gives one note to each candidates of the election
      */

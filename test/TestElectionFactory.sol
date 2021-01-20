@@ -28,6 +28,13 @@ contract TestElectionFactory is ElectionFactory {
         Assert.equal(string(elections[electionId].candidates[2].name), string(namesList[2]), "Third candidate sould be Ross Perot");
     }
 
+    function testAddCandidate() public {
+        uint electionId = this._createElection("USA president election", namesList);
+
+        addCandidate(electionId, "Candidat Test");
+        Assert.equal(string(elections[0].candidates[0].name), string("Candidat Test"), "Candidate should be added to the list");
+    }
+
     function test_candidates_names() public {
         namesList.push("George H. W. Bush");
         namesList.push("Bill Clinton");
@@ -40,7 +47,7 @@ contract TestElectionFactory is ElectionFactory {
         uint firstElectionId = this._createElection("USA president election", namesList);
         uint secondElectionId = this._createElection("Titi et gros minet", namesList2);
 
-        Assert.equal(string(elections[firstElectionId].name), string("Titi et gros minet"), "Should return the right election");
+        Assert.equal(string(elections[firstElectionId].title), string("Titi et gros minet"), "Should return the right election");
         Assert.equal(string(elections[secondElectionId].candidates[0].name), string("Titi"), "Should return the right candidate name");
         Assert.equal(string(elections[secondElectionId].candidates[0].name), string("George H. W. Bush"), "Should return the right candidate name");
     }

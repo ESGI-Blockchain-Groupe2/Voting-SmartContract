@@ -7,165 +7,141 @@ import "../contracts/CandidateHelper.sol";
 import "../contracts/VoteHelper.sol";
 import "truffle/Assert.sol";
 
-contract TestElectionHelper {
+contract TestElectionHelper is ElectionHelper {
+    uint electionId;
+    string[] namesList;
 
     function beforeEach() public {
-        election = new Election("Test Election", block.timestamp, 1 days + uint32(block.timestamp));
-    }
-
-    function testAddCandidate() public {
-        string memory candidatName = "Candidat Test";
-        election.addCandidate(candidatName);
-        Assert.equal(election[0].name, candidatName, "Candidate should be added to the list");
+        delete namesList;
+        namesList.push("Candidate 1");
+        namesList.push("Candidate 2");
+        namesList.push("Candidate 3");
+        electionId = this._createElection("Test Election", namesList);
     }
 
     function test_end_election() public {
-        string[] namesList = ["George H. W. Bush", "Bill Clinton", "Ross Perot"];
-
-        uint electionId = _createElection("USA president election", namesList);
-
-        endElection(electionId);
-
+        this.endElection(electionId);
         Assert.equal(elections[electionId].isOpen, false, "Election should be closed");
     }
 
     function initElectionWithVote() public {
-        string memory candidateName1 = "Candidat 1";
-        string memory candidatName2 = "Candidat 2";
-        string memory candidateName3 = "Candidat 3";
-
-        election.addCandidate(candidateName1);
-        election.addCandidate(candidatName2);
-        election.addCandidate(candidateName3);
-
         // First voter
-        election.getCandidate(0).addNote(6);
-        election.getCandidate(1).addNote(3);
-        election.getCandidate(2).addNote(1);
-
-        election.incrementVoters();
+        addNote(electionId, 0, 6);
+        addNote(electionId, 1, 3);
+        addNote(electionId, 2, 1);
+        incrementVoters(electionId);
 
         // Second voter
-        election.getCandidate(0).addNote(5);
-        election.getCandidate(1).addNote(6);
-        election.getCandidate(2).addNote(3);
-
-        election.incrementVoters();
+        addNote(electionId, 0, 5);
+        addNote(electionId, 1, 6);
+        addNote(electionId, 2, 3);
+        incrementVoters(electionId);
 
         // Third voter
-        election.getCandidate(0).addNote(2);
-        election.getCandidate(1).addNote(2);
-        election.getCandidate(2).addNote(2);
-
-        election.incrementVoters();
+        addNote(electionId, 0, 2);
+        addNote(electionId, 1, 2);
+        addNote(electionId, 2, 2);
+        incrementVoters(electionId);
     }
 
     function initElectionWithVoteDraw() public {
-        string memory candidateName1 = "Candidat 1";
-        string memory candidateName2 = "Candidate 2";
-        string memory candidateName3 = "Candidate 3";
+        // First voter
+        addNote(electionId, 0, 5);
+        addNote(electionId, 1, 5);
+        addNote(electionId, 2, 2);
+        incrementVoters(electionId);
 
-        election.addCandidate(candidateName1);
-        election.addCandidate(candidateName2);
-        election.addCandidate(candidateName3);
+        // Second voter
+        addNote(electionId, 0, 5);
+        addNote(electionId, 1, 6);
+        addNote(electionId, 2, 2);
+        incrementVoters(electionId);
 
-        election.getCandidate(0).addNote(5);
-        election.getCandidate(1).addNote(5);
-        election.getCandidate(2).addNote(2);
-
-        election.incrementVoters();
-
-        election.getCandidate(0).addNote(5);
-        election.getCandidate(1).addNote(6);
-        election.getCandidate(2).addNote(2);
-
-        election.incrementVoters();
-
-        election.getCandidate(0).addNote(3);
-        election.getCandidate(1).addNote(3);
-        election.getCandidate(2).addNote(4);
-
-        election.incrementVoters();
+        // Third voter
+        addNote(electionId, 0, 3);
+        addNote(electionId, 1, 3);
+        addNote(electionId, 2, 4);
+        incrementVoters(electionId);
     }
 
     function testComputeCandidateAverageNote() public {
         initElectionWithVote();
-        election.computeCandidatesAverageNote();
-        uint avgNote = election.getCandidate(0).getAvgNote();
+        computeCandidatesAverageNote(electionId);
+        uint avgNote = elections[electionId].candidates[0].averageNote;
         Assert.equal(avgNote, 5, "Candidate 1 should have average note of 5");
     }
 
     function testComputeCandidate2AverageNote() public {
         initElectionWithVote();
-        election.computeCandidatesAverageNote();
-        uint avgNote = election.getCandidate(1).getAvgNote();
+        computeCandidatesAverageNote(electionId);
+        uint avgNote = elections[electionId].candidates[1].averageNote;
         Assert.equal(avgNote, 3, "Candidate 2 should have average note of 3");
     }
 
     function testComputeCandidate3AverageNote() public {
         initElectionWithVote();
-        election.computeCandidatesAverageNote();
-        uint avgNote = election.getCandidate(2).getAvgNote();
+        computeCandidatesAverageNote(electionId);
+        uint avgNote = elections[electionId].candidates[2].averageNote;
         Assert.equal(avgNote, 2, "Candidate 3 should have average note of 2");
     }
 
     function testComputeFirstRoundWinnersWithoutDraw() public {
         initElectionWithVote();
-        election.computeCandidatesAverageNote();
-        election.computeFirstRoundWinners();
-        uint[] memory winners = election.getFirstRoundWinners();
+        computeCandidatesAverageNote(electionId);
+        computeFirstRoundWinners(electionId);
+        uint[] memory winners = getFirstRoundWinners(electionId);
         Assert.equal(winners[0], 0, "First round winner should be candidate 1 with average note of 5");
     }
 
     function testComputeFinalRoundWinner() public {
         initElectionWithVote();
-        election.computeCandidatesAverageNote();
-        election.computeFirstRoundWinners();
-        election.computeFinalRoundWinner();
-        uint winner = election.getWinner();
+        computeCandidatesAverageNote(electionId);
+        computeFirstRoundWinners(electionId);
+        computeFinalRoundWinner(electionId);
+        uint winner = elections[electionId].winner;
         Assert.equal(winner, 0, "We should get the first candidate as winner");
     }
 
     function testComputeResultWithoutDraw() public {
         initElectionWithVote();
-        election.computeResult();
-        uint winner = election.getWinner();
+        computeResult(electionId);
+        uint winner = elections[electionId].winner;
         Assert.equal(winner, 0, "should return election winner index");
     }
 
     function testAverageNoteElectionDraw1() public {
         initElectionWithVoteDraw();
-        election.computeCandidatesAverageNote();
-        uint avgNote = election.getCandidate(0).getAvgNote();
+        computeCandidatesAverageNote(electionId);
+        uint avgNote = elections[electionId].candidates[0].averageNote;
         Assert.equal(avgNote, 5, "avgNote should be 5");
     }
 
     function testAverageNoteElectionDraw2() public {
         initElectionWithVoteDraw();
-        election.computeCandidatesAverageNote();
-        uint avgNote = election.getCandidate(1).getAvgNote();
+        computeCandidatesAverageNote(electionId);
+        uint avgNote = elections[electionId].candidates[1].averageNote;
         Assert.equal(avgNote, 5, "avgNote should be 5");
     }
 
     function testAverageNoteElectionDraw3() public {
         initElectionWithVoteDraw();
-        election.computeCandidatesAverageNote();
-        uint avgNote = election.getCandidate(2).getAvgNote();
+        computeCandidatesAverageNote(electionId);
+        uint avgNote = elections[electionId].candidates[2].averageNote;
         Assert.equal(avgNote, 2, "avgNote should be 2");
     }
 
     function testComputeFirstRoundWinnersWithDraw() public {
         initElectionWithVoteDraw();
-        election.computeCandidatesAverageNote();
-        election.computeFirstRoundWinners();
-        uint[] memory winners = election.getFirstRoundWinners();
+        computeCandidatesAverageNote(electionId);
+        computeFirstRoundWinners(electionId);
+        uint[] memory winners = getFirstRoundWinners(electionId);
         Assert.equal(winners.length, 2, "We should have 2 first round winner");
     }
 
     function testComputeResultWithDraw() public {
         initElectionWithVoteDraw();
-        election.computeResult();
-        uint winner = election.getWinner();
+        computeResult(electionId);
+        uint winner = elections[electionId].winner;
         Assert.equal(winner, 0, "should return election winner");
     }
 

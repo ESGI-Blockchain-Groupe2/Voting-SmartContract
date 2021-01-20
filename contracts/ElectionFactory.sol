@@ -5,7 +5,7 @@ pragma experimental ABIEncoderV2;
 import "./ownable.sol";
 
 contract ElectionFactory is Ownable {
-    constructor (){
+    constructor () {
         listAdmin[owner] = true;
     }
 
