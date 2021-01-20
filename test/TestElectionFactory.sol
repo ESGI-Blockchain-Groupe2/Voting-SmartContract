@@ -6,7 +6,8 @@ import "truffle/Assert.sol";
 
 import "../contracts/ElectionFactory.sol";
 
-contract TestElectionFactory is ElectionFactory {
+contract TestElectionFactory {
+    ElectionFactory voteContract;
     string[] namesList;
     string[] namesList2;
 
@@ -15,6 +16,8 @@ contract TestElectionFactory is ElectionFactory {
         namesList.push("George H. W. Bush");
         namesList.push("Bill Clinton");
         namesList.push("Ross Perot");
+
+        voteContract = new ElectionFactory();
     }
 
     function generateSecondNameList() public {
@@ -25,30 +28,30 @@ contract TestElectionFactory is ElectionFactory {
     }
 
     function test_election_creation() public {
-        uint electionId = this._createElection("USA president election", namesList);
+        uint electionId = voteContract._createElection("USA president election", namesList);
 
-        Assert.equal(string(elections[electionId].title), string("USA president election"), "Title of the first election should be USA president election");
-        Assert.equal(string(elections[electionId].candidates[0].name), string(namesList[0]), "First candidate sould be George H. W. Bush");
-        Assert.equal(string(elections[electionId].candidates[1].name), string(namesList[1]), "Second candidate sould be Bill Clinton");
-        Assert.equal(string(elections[electionId].candidates[2].name), string(namesList[2]), "Third candidate sould be Ross Perot");
+        Assert.equal(string(voteContract.getElectionTitle(electionId)), string("USA president election"), "Title of the first election should be USA president election");
+        Assert.equal(string(voteContract.getCandidateName(electionId, 0)), string(namesList[0]), "First candidate sould be George H. W. Bush");
+        Assert.equal(string(voteContract.getCandidateName(electionId, 1)), string(namesList[1]), "Second candidate sould be Bill Clinton");
+        Assert.equal(string(voteContract.getCandidateName(electionId, 2)), string(namesList[2]), "Third candidate sould be Ross Perot");
     }
 
     function testAddCandidate() public {
-        uint electionId = this._createElection("USA president election", namesList);
+        uint electionId = voteContract._createElection("USA president election", namesList);
 
-        addCandidate(electionId, "Candidat Test");
-        Assert.equal(string(elections[0].candidates[0].name), string("Candidat Test"), "Candidate should be added to the list");
+        voteContract.addCandidate(electionId, "Candidat Test");
+        Assert.equal(string(voteContract.getCandidateName(electionId, 3)), string("Candidat Test"), "Candidate should be added to the list");
     }
 
     function test_candidates_names() public {
         generateSecondNameList();
 
-        uint firstElectionId = this._createElection("USA president election", namesList);
-        uint secondElectionId = this._createElection("Titi et gros minet", namesList2);
+        uint firstElectionId = voteContract._createElection("USA president election", namesList);
+        uint secondElectionId = voteContract._createElection("Titi et gros minet", namesList2);
 
-        Assert.equal(string(elections[firstElectionId].title), string("Titi et gros minet"), "Should return the right election");
-        Assert.equal(string(elections[secondElectionId].candidates[0].name), string("Titi"), "Should return the right candidate name");
-        Assert.equal(string(elections[secondElectionId].candidates[0].name), string("George H. W. Bush"), "Should return the right candidate name");
+        Assert.equal(string(voteContract.getElectionTitle(secondElectionId)), string("Titi et gros minet"), "Should return the right election");
+        Assert.equal(string(voteContract.getCandidateName(secondElectionId, 0)), string("Titi"), "Should return the right candidate name");
+        Assert.equal(string(voteContract.getCandidateName(firstElectionId, 0)), string("George H. W. Bush"), "Should return the right candidate name");
     }
 
     // Outdated test

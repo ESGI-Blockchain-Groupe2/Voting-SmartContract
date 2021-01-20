@@ -86,4 +86,16 @@ contract ElectionFactory is Ownable {
 
         return electionsCount;
     }
+
+    function incrementVoters(uint _electionId) public {
+        elections[_electionId].totalVoters ++;
+    }
+
+    function getElectionTitle(uint _electionId) public view returns (string memory) {
+        return elections[_electionId].title;
+    }
+
+    function getCandidateName(uint _electionId, uint _candidateId) public view returns (string memory) {
+        return elections[_electionId].candidates[_candidateId].name;
+    }
 }

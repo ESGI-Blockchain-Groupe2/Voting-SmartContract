@@ -13,12 +13,12 @@ contract ElectionHelper is ElectionFactory, CandidateHelper {
         computeResult(_electionId);
     }
 
-    function getCandidatesCount(uint _electionId) public view returns (uint) {
-        return elections[_electionId].candidatesCount;
+    function getElectionStatus(uint _electionId) public view returns (bool) {
+        return elections[_electionId].isOpen;
     }
 
-    function incrementVoters(uint _electionId) public {
-        elections[_electionId].totalVoters ++;
+    function getElectionWinner(uint _electionId) public view returns (uint) {
+        return elections[_electionId].winner;
     }
 
     function addVoter(uint _electionId) public {
