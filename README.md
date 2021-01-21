@@ -41,25 +41,25 @@ truffle test --reset --network kovan
 
 ```
 ElectionHelper
+    function endElection(uint _electionId) external isAdmin(msg.sender) {
     function getElectionWinner(uint _electionId) external view returns (uint) {
-    function endElection(uint _electionId) external isAdmin(msg.sender) {µ
-    function getElectionsCount() external view returns (uint) {
 ```
 
 ```
 CandidateHelper
-    function getCandidateAverageNote(uint _electionId, uint _candidateId) external view returns (uint) {
+    function getCandidateName(uint _electionId, uint _candidateId) external view returns (string memory) {
     function getCandidatesCount(uint _electionId) external view returns (uint) {
+    function getCandidateAverageNote(uint _electionId, uint _candidateId) external view returns (uint) {
     function calculatePercentageOfNote(uint _electionId, uint _candidateId, uint _note) external view returns(uint){
 ```
 
 ```
 ElectionFactory
-    function createElection(string memory _title, string[] memory _candidatesNames) external isAdmin(msg.sender) returns (uint) {
-    function getCandidateName(uint _electionId, uint _candidateId) external view returns (string memory) {
     function addAdmin(address _userAddress) external isAdmin(msg.sender) {
     function deleteAdmin(address _userAddress) external isAdmin(msg.sender) {
     function isUserAdmin(address userAddress) external view returns(bool){
+    function getElectionsCount() external view returns (uint) {
+    function createElection(string memory _title, string[] memory _candidatesNames) external isAdmin(msg.sender) returns (uint) {
     elections(uint _electionId);
 ```
 
