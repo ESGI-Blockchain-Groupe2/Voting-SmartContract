@@ -23,6 +23,6 @@ contract TestElectionFactory {
     function test_Election_Creation() public {
         voteContract.createElection("USA president election", namesList);
 
-        Assert.equal(uint(voteContract.getElectionsCount()), uint(1), "Count of election should be 1");
+        Assert.equal(uint(voteContract.electionsCount()), uint(1), "Count of election should be 1");
     }
 }

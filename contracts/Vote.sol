@@ -8,7 +8,7 @@ import "./ElectionHelper.sol";
 
 contract Vote is Candidate, ElectionHelper {
     modifier hasNotVoted(uint _electionId) {
-        require (!hasAlreadyVoted(_electionId), "User has already voted");
+        require (!this.hasAlreadyVoted(_electionId), "User has already voted");
         _;
     }
 

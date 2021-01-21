@@ -54,10 +54,6 @@ contract ElectionFactory is Ownable {
         return listAdmin[userAddress];
     }
 
-    /*function getElectionsCount() external view returns (uint) {
-        return electionsCount;
-    }*/
-
     function createElection(string memory _title, string[] memory _candidatesNames) external isAdmin(msg.sender) returns (uint) {
         uint nbCandidates = _candidatesNames.length;
         electionsCount++;
