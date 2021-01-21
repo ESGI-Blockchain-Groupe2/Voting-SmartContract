@@ -12,7 +12,7 @@ contract Vote is Candidate, ElectionHelper {
         _;
     }
 
-    function hasAlreadyVoted(uint _electionId) public view returns (bool) {
+    function hasAlreadyVoted(uint _electionId) external view returns (bool) {
         return elections[_electionId].voters[msg.sender];
     }
 

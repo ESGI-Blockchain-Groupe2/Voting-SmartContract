@@ -46,7 +46,7 @@ ElectionHelper
 ```
 
 ```
-CandidateHelper
+Candidate
     function getCandidateName(uint _electionId, uint _candidateId) external view returns (string memory) {
     function getCandidatesCount(uint _electionId) external view returns (uint) {
     function getCandidateAverageNote(uint _electionId, uint _candidateId) external view returns (uint) {
@@ -64,6 +64,7 @@ ElectionFactory
 ```
 
 ```
-VoteHelper
+Vote
     function voteToElection(uint _electionId, uint[] calldata _notes) external hasNotVoted(_electionId) {
+    function hasAlreadyVoted(uint _electionId) external view returns (bool) {
 ```

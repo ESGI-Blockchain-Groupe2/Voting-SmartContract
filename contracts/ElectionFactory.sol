@@ -9,8 +9,6 @@ contract ElectionFactory is Ownable {
         listAdmin[owner] = true;
     }
 
-    event NewElection(uint id);
-
     struct Election {
         string title;
         uint256 creationDate;
@@ -31,35 +29,34 @@ contract ElectionFactory is Ownable {
         uint percent;
         uint averageNote;
     }
-    uint electionsCount;
+    uint public electionsCount;
     mapping (uint => Election) public elections;
-    //Election[] public elections;
 
     mapping (uint => address) electionToOwner;
     mapping (address => uint) ownerElectionCount;
     mapping (address => bool) listAdmin;
 
-    modifier isAdmin(address userAddress){
-        require (listAdmin[userAddress] == true);
+    modifier isAdmin(address _userAddress) {
+        require (listAdmin[_userAddress] == true, "You are not an admin");
         _;
     }
 
     function addAdmin(address _userAddress) external isAdmin(msg.sender) {
-        listAdmin[_userAddress]= true;
+        listAdmin[_userAddress] = true;
     }
 
     function deleteAdmin(address _userAddress) external isAdmin(msg.sender) {
+        require(msg.sender != owner, "Cannot remove owner from admins");
         listAdmin[_userAddress] = false;
     }
-
 
     function isUserAdmin(address userAddress) external view returns(bool){
         return listAdmin[userAddress];
     }
 
-    function getElectionsCount() external view returns (uint) {
+    /*function getElectionsCount() external view returns (uint) {
         return electionsCount;
-    }
+    }*/
 
     function createElection(string memory _title, string[] memory _candidatesNames) external isAdmin(msg.sender) returns (uint) {
         uint nbCandidates = _candidatesNames.length;
