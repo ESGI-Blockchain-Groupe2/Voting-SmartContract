@@ -3,13 +3,15 @@ pragma solidity >= 0.7.0 < 0.8.0;
 pragma experimental ABIEncoderV2;
 
 import "truffle/Assert.sol";
-import "../contracts/CandidateHelper.sol";
+import "../contracts/Candidate.sol";
 
-contract TestCandidateHelper {
-    CandidateHelper voteContract;
+contract TestCandidate {
+    Candidate voteContract;
     uint electionId;
     uint candidatesCount;
     string[] nameList;
+    string[] nameList2;
+
     uint[] notes;
     uint[] notes2;
     uint[] notes3;
@@ -22,7 +24,7 @@ contract TestCandidateHelper {
         nameList.push("Michel");
         nameList.push("Bernard");
 
-        voteContract = new CandidateHelper();
+        voteContract = new Candidate();
 
         electionId = voteContract.createElection("Test election", nameList);
         candidatesCount = voteContract.getCandidatesCount(electionId);
@@ -36,12 +38,40 @@ contract TestCandidateHelper {
         voteContract.incrementVoters(electionId);
     }
 
-    function testName() public {
+    function generateSecondNameList() public {
+        delete nameList2;
+        nameList2.push("Titi");
+        nameList2.push("Gros");
+        nameList2.push("Minet");
+    }
+
+    function test_Name() public {
         string memory expected = "Jean";
         Assert.equal(string(voteContract.getCandidateName(electionId, 0)), string(expected), "Candidate name should be jean");
     }
 
-    function testAddNotes() public {
+    function test_GetCandidateNames() public {
+        Assert.equal(string(voteContract.getCandidateName(electionId, 0)), string(nameList[0]), "First candidate sould be George H. W. Bush");
+        Assert.equal(string(voteContract.getCandidateName(electionId, 1)), string(nameList[1]), "Second candidate sould be Bill Clinton");
+        Assert.equal(string(voteContract.getCandidateName(electionId, 2)), string(nameList[2]), "Third candidate sould be Ross Perot");
+    }
+
+    function test_AddCandidate() public {
+        voteContract.addCandidate(electionId, "Candidat Test");
+        Assert.equal(string(voteContract.getCandidateName(electionId, 3)), string("Candidat Test"), "Candidate should be added to the list");
+    }
+
+    function test_GetCandidateNames_WithTwoElections() public {
+        generateSecondNameList();
+
+        uint firstElectionId = voteContract.createElection("USA president election", nameList);
+        uint secondElectionId = voteContract.createElection("Titi et gros minet", nameList2);
+
+        Assert.equal(string(voteContract.getCandidateName(secondElectionId, 0)), string("Titi"), "Should return the right candidate name");
+        Assert.equal(string(voteContract.getCandidateName(firstElectionId, 0)), string("Jean"), "Should return the right candidate name");
+    }
+
+    function test_AddNotes() public {
         notes.push(5);
         notes.push(4);
         notes.push(3);
@@ -50,7 +80,7 @@ contract TestCandidateHelper {
         Assert.equal(result, 1, "Note 5 should've been chosen once");
     }
 
-    function testCalculatePercent() public {
+    function test_CalculatePercent() public {
         notes.push(5);
         notes.push(4);
         notes.push(3);
@@ -72,7 +102,7 @@ contract TestCandidateHelper {
         Assert.equal(percent, 33, "Percent of voters voting 5 for candidate Jean");
     }
 
-    function testComputeAverageNote() public {
+    function test_ComputeAverageNote() public {
         notes.push(5);
         notes.push(4);
         notes.push(6);

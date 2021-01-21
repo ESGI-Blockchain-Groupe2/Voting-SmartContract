@@ -2,11 +2,11 @@
 pragma solidity >= 0.7.0 < 0.8.0;
 pragma experimental ABIEncoderV2;
 
-import "./CandidateHelper.sol";
+import "./Candidate.sol";
 import "./ElectionHelper.sol";
 
 
-contract VoteHelper is CandidateHelper, ElectionHelper {
+contract Vote is Candidate, ElectionHelper {
     modifier hasNotVoted(uint _electionId) {
         require (!hasAlreadyVoted(_electionId), "User has already voted");
         _;

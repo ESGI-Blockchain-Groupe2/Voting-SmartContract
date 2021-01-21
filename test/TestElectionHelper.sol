@@ -20,9 +20,13 @@ contract TestElectionHelper {
         electionId = voteContract.createElection("Test Election", namesList);
     }
 
-    function test_end_election() public {
+    function testEndElection() public {
         voteContract.endElection(electionId);
         Assert.equal(voteContract.getElectionStatus(electionId), false, "Election should be closed");
+    }
+
+    function testElectionCreation() public {
+        Assert.equal(string(voteContract.getElectionTitle(electionId)), string("Test Election"), "Title of the first election should be USA president election");
     }
 
     function initElectionWithVote() public {

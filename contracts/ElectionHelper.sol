@@ -2,15 +2,20 @@
 pragma solidity >= 0.7.0 < 0.8.0;
 pragma experimental ABIEncoderV2;
 
-import './CandidateHelper.sol';
+import './Candidate.sol';
 import "./ownable.sol";
 import "./ElectionFactory.sol";
 
 
-contract ElectionHelper is ElectionFactory, CandidateHelper {
+contract ElectionHelper is ElectionFactory, Candidate {
     function endElection(uint _electionId) external isAdmin(msg.sender) {
         elections[_electionId].isOpen = false;
+        elections[_electionId].closingDate = block.timestamp;
         computeResult(_electionId);
+    }
+
+    function getElectionTitle(uint _electionId) public view returns (string memory) {
+        return elections[_electionId].title;
     }
 
     function getElectionStatus(uint _electionId) public view returns (bool) {

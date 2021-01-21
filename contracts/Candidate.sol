@@ -5,9 +5,17 @@ pragma experimental ABIEncoderV2;
 import "./ElectionFactory.sol";
 
 
-contract CandidateHelper is ElectionFactory {
+contract Candidate is ElectionFactory {
     function addNote(uint _electionId, uint _candidateId, uint _noteId) public {
         elections[_electionId].candidates[_candidateId].notes[_noteId] ++;
+    }
+
+    function incrementVoters(uint _electionId) public {
+        elections[_electionId].totalVoters ++;
+    }
+
+    function getCandidateName(uint _electionId, uint _candidateId) external view returns (string memory) {
+        return elections[_electionId].candidates[_candidateId].name;
     }
 
     function getCandidatesCount(uint _electionId) external view returns (uint) {

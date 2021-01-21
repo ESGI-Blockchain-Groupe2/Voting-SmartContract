@@ -9,14 +9,12 @@ contract ElectionFactory is Ownable {
         listAdmin[owner] = true;
     }
 
-    uint32 expiration = 15 days;
-
     event NewElection(uint id);
 
     struct Election {
         string title;
         uint256 creationDate;
-        uint256 expiresAfter;
+        uint closingDate;
         uint totalVoters;
         bool isOpen;
 
@@ -59,13 +57,6 @@ contract ElectionFactory is Ownable {
         return listAdmin[userAddress];
     }
 
-    /*
-     * ElectionHelper.sol
-     */
-    function addCandidate(uint _electionId, string memory _candidateName) public {
-        elections[_electionId].candidates[elections[_electionId].candidatesCount++].name = _candidateName;
-    }
-
     function getElectionsCount() external view returns (uint) {
         return electionsCount;
     }
@@ -76,7 +67,6 @@ contract ElectionFactory is Ownable {
         Election storage election = elections[electionsCount];
         election.title = _title;
         election.creationDate = block.timestamp;
-        election.expiresAfter = expiration;
         election.totalVoters = 0;
         election.isOpen = true;
 
@@ -91,15 +81,7 @@ contract ElectionFactory is Ownable {
         return electionsCount;
     }
 
-    function incrementVoters(uint _electionId) public {
-        elections[_electionId].totalVoters ++;
-    }
-
-    function getElectionTitle(uint _electionId) public view returns (string memory) {
-        return elections[_electionId].title;
-    }
-
-    function getCandidateName(uint _electionId, uint _candidateId) external view returns (string memory) {
-        return elections[_electionId].candidates[_candidateId].name;
+    function addCandidate(uint _electionId, string memory _candidateName) public {
+        elections[_electionId].candidates[elections[_electionId].candidatesCount++].name = _candidateName;
     }
 }

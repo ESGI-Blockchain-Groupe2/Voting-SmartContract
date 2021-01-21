@@ -3,10 +3,10 @@ pragma solidity >= 0.7.0 < 0.8.0;
 pragma experimental ABIEncoderV2;
 
 import "truffle/Assert.sol";
-import "../contracts/VoteHelper.sol";
+import "../contracts/Vote.sol";
 
-contract TestVoteHelper {
-    VoteHelper voteContract;
+contract TestVote {
+    Vote voteContract;
     uint electionId;
     string[] namesList;
 
@@ -17,7 +17,7 @@ contract TestVoteHelper {
         namesList.push("Candidate 2");
         namesList.push("Candidate 3");
 
-        voteContract = new VoteHelper();
+        voteContract = new Vote();
         electionId = voteContract.createElection("TestElection", namesList);
    }
 
