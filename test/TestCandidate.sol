@@ -38,37 +38,38 @@ contract TestCandidate {
         voteContract.incrementVoters(electionId);
     }
 
-    function generateSecondNameList() public {
+    function _generateSecondNameList() internal {
         delete nameList2;
         nameList2.push("Titi");
         nameList2.push("Gros");
         nameList2.push("Minet");
     }
 
-    function test_Name() public {
-        string memory expected = "Jean";
-        Assert.equal(string(voteContract.getCandidateName(electionId, 0)), string(expected), "Candidate name should be jean");
-    }
-
-    function test_GetCandidateNames() public {
-        Assert.equal(string(voteContract.getCandidateName(electionId, 0)), string(nameList[0]), "First candidate sould be George H. W. Bush");
-        Assert.equal(string(voteContract.getCandidateName(electionId, 1)), string(nameList[1]), "Second candidate sould be Bill Clinton");
-        Assert.equal(string(voteContract.getCandidateName(electionId, 2)), string(nameList[2]), "Third candidate sould be Ross Perot");
+    function test_GetCandidate() public {
+        string memory expectedName = "Jean";
+        uint expectedPercent = 0;
+        uint expectedAverageNote = 0;
+        (string memory name, uint percent, uint averageNote) = voteContract.getCandidate(electionId, 0);
+        Assert.equal(string(name), string(expectedName), "Candidate name should be Jean");
+        Assert.equal(uint(percent), uint(expectedPercent), "Candidate percent should be 0");
+        Assert.equal(uint(averageNote), uint(expectedAverageNote), "Candidate average note should be 0");
     }
 
     function test_AddCandidate() public {
         voteContract.addCandidate(electionId, "Candidat Test");
-        Assert.equal(string(voteContract.getCandidateName(electionId, 3)), string("Candidat Test"), "Candidate should be added to the list");
+        (string memory name, , ) = voteContract.getCandidate(electionId, 3);
+        Assert.equal(string(name), string("Candidat Test"), "Candidate should be added to the list");
     }
 
     function test_GetCandidateNames_WithTwoElections() public {
-        generateSecondNameList();
+        _generateSecondNameList();
 
         uint firstElectionId = voteContract.createElection("USA president election", nameList);
         uint secondElectionId = voteContract.createElection("Titi et gros minet", nameList2);
-
-        Assert.equal(string(voteContract.getCandidateName(secondElectionId, 0)), string("Titi"), "Should return the right candidate name");
-        Assert.equal(string(voteContract.getCandidateName(firstElectionId, 0)), string("Jean"), "Should return the right candidate name");
+        (string memory name, , ) = voteContract.getCandidate(firstElectionId, 0);
+        (string memory name2, , ) = voteContract.getCandidate(secondElectionId, 0);
+        Assert.equal(string(name), string("Jean"), "Should return the right candidate name");
+        Assert.equal(string(name2), string("Titi"), "Should return the right candidate name");
     }
 
     function test_AddNotes() public {
@@ -108,6 +109,7 @@ contract TestCandidate {
         notes.push(6);
         _voteForCandidates(notes);
         voteContract.computeAverageNote(electionId, 0);
-        Assert.equal(voteContract.getCandidateAverageNote(electionId, 0), 5, "Candidate average note should be 5");
+        ( , , uint averageNote) = voteContract.getCandidate(electionId, 0);
+        Assert.equal(averageNote, 5, "Candidate average note should be 5");
     }
 }

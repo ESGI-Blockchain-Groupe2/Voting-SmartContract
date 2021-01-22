@@ -14,8 +14,9 @@ contract Candidate is ElectionFactory {
         elections[_electionId].totalVoters ++;
     }
 
-    function getCandidateName(uint _electionId, uint _candidateId) external view returns (string memory) {
-        return elections[_electionId].candidates[_candidateId].name;
+    function getCandidate(uint _electionId, uint _candidateId) external view returns (string memory, uint, uint) {
+        Candidate storage candidate = elections[_electionId].candidates[_candidateId];
+        return (candidate.name, candidate.percent, candidate.averageNote);
     }
 
     function getCandidatesCount(uint _electionId) external view returns (uint) {
@@ -24,10 +25,6 @@ contract Candidate is ElectionFactory {
 
     function getCandidateNote(uint _electionId, uint _candidateId, uint _noteId) public view returns (uint) {
         return elections[_electionId].candidates[_candidateId].notes[_noteId];
-    }
-
-    function getCandidateAverageNote(uint _electionId, uint _candidateId) external view returns (uint) {
-        return elections[_electionId].candidates[_candidateId].averageNote;
     }
 
     function calculatePercentageOfNote(uint _electionId, uint _candidateId, uint _note) external view returns(uint){

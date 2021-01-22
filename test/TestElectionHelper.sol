@@ -72,22 +72,22 @@ contract TestElectionHelper {
     function testComputeCandidateAverageNote() public {
         initElectionWithVote();
         voteContract.computeCandidatesAverageNote(electionId);
-        uint avgNote = voteContract.getCandidateAverageNote(electionId, 0);
-        Assert.equal(avgNote, 5, "Candidate 1 should have average note of 5");
+        ( , , uint averageNote) = voteContract.getCandidate(electionId, 0);
+        Assert.equal(averageNote, 5, "Candidate 1 should have average note of 5");
     }
 
     function testComputeCandidate2AverageNote() public {
         initElectionWithVote();
         voteContract.computeCandidatesAverageNote(electionId);
-        uint avgNote = voteContract.getCandidateAverageNote(electionId, 1);
-        Assert.equal(avgNote, 3, "Candidate 2 should have average note of 3");
+        ( , , uint averageNote) = voteContract.getCandidate(electionId, 1);
+        Assert.equal(averageNote, 3, "Candidate 2 should have average note of 3");
     }
 
     function testComputeCandidate3AverageNote() public {
         initElectionWithVote();
         voteContract.computeCandidatesAverageNote(electionId);
-        uint avgNote = voteContract.getCandidateAverageNote(electionId, 2);
-        Assert.equal(avgNote, 2, "Candidate 3 should have average note of 2");
+        ( , , uint averageNote) = voteContract.getCandidate(electionId, 2);
+        Assert.equal(averageNote, 2, "Candidate 3 should have average note of 2");
     }
 
     function testComputeFirstRoundWinnersWithoutDraw() public {
@@ -117,22 +117,22 @@ contract TestElectionHelper {
     function testAverageNoteElectionDraw1() public {
         initElectionWithVoteDraw();
         voteContract.computeCandidatesAverageNote(electionId);
-        uint avgNote = voteContract.getCandidateAverageNote(electionId, 0);
-        Assert.equal(avgNote, 5, "avgNote should be 5");
+        ( , , uint averageNote) = voteContract.getCandidate(electionId, 0);
+        Assert.equal(averageNote, 5, "avgNote should be 5");
     }
 
     function testAverageNoteElectionDraw2() public {
         initElectionWithVoteDraw();
         voteContract.computeCandidatesAverageNote(electionId);
-        uint avgNote = voteContract.getCandidateAverageNote(electionId, 1);
-        Assert.equal(avgNote, 5, "avgNote should be 5");
+        ( , , uint averageNote) = voteContract.getCandidate(electionId, 1);
+        Assert.equal(averageNote, 5, "avgNote should be 5");
     }
 
     function testAverageNoteElectionDraw3() public {
         initElectionWithVoteDraw();
         voteContract.computeCandidatesAverageNote(electionId);
-        uint avgNote = voteContract.getCandidateAverageNote(electionId, 2);
-        Assert.equal(avgNote, 2, "avgNote should be 2");
+        ( , , uint averageNote) = voteContract.getCandidate(electionId, 2);
+        Assert.equal(averageNote, 2, "avgNote should be 2");
     }
 
     function testComputeFirstRoundWinnersWithDraw() public {
