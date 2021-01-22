@@ -109,9 +109,8 @@ contract TestElectionHelper {
 
     function testComputeResultWithoutDraw() public {
         initElectionWithVote();
-        voteContract.computeResult(electionId);
-        uint winner = voteContract.getElectionWinner(electionId);
-        Assert.equal(winner, 0, "should return election winner index");
+        bool isTie = voteContract.computeResult(electionId);
+        Assert.equal(isTie, false, "Should return false as there is supposed to be no draw");
     }
 
     function testAverageNoteElectionDraw1() public {
@@ -145,8 +144,7 @@ contract TestElectionHelper {
 
     function testComputeResultWithDraw() public {
         initElectionWithVoteDraw();
-        voteContract.computeResult(electionId);
-        uint winner = voteContract.getElectionWinner(electionId);
-        Assert.equal(winner, 0, "should return election winner");
+        bool isTie = voteContract.computeResult(electionId);
+        Assert.equal(isTie, true, "Should return true as there is supposed to be a draw");
     }
 }
