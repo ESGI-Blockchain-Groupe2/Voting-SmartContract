@@ -103,14 +103,15 @@ contract TestElectionHelper {
         voteContract.computeCandidatesAverageNote(electionId);
         voteContract.computeFirstRoundWinners(electionId);
         voteContract.computeFinalRoundWinner(electionId);
-        uint winner = voteContract.getElectionWinner(electionId);
-        Assert.equal(winner, 0, "We should get the first candidate as winner");
+        uint[] memory winners = voteContract.getElectionWinners(electionId);
+        Assert.equal(winners[0], 0, "We should get the first candidate as winner");
+        Assert.equal(winners.length, 1, "There should be one winner only");
     }
 
     function testComputeResultWithoutDraw() public {
         initElectionWithVote();
-        bool isTie = voteContract.computeResult(electionId);
-        Assert.equal(isTie, false, "Should return false as there is supposed to be no draw");
+        uint[] memory winners = voteContract.computeResult(electionId);
+        Assert.equal(uint(winners.length), uint(1), "There should be one winner only");
     }
 
     function testAverageNoteElectionDraw1() public {
@@ -144,7 +145,18 @@ contract TestElectionHelper {
 
     function testComputeResultWithDraw() public {
         initElectionWithVoteDraw();
-        bool isTie = voteContract.computeResult(electionId);
-        Assert.equal(isTie, true, "Should return true as there is supposed to be a draw");
+        uint[] memory winners = voteContract.computeResult(electionId);
+        Assert.equal(uint(winners.length), uint(2), "There should be two winners");
+        Assert.equal(winners[0], 0, "The first candidate should be candidate 0");
+        Assert.equal(winners[1], 1, "The second candidate should be candidate 1");
+
+    }
+
+    function testGetElectionWinnerReturnsSameAsComputeResult() public {
+        initElectionWithVoteDraw();
+        uint[] memory computeWinners = voteContract.computeResult(electionId);
+        uint[] memory getWinners = voteContract.getElectionWinners(electionId);
+        Assert.equal(computeWinners, getWinners, "Should return the same arrays");
+
     }
 }

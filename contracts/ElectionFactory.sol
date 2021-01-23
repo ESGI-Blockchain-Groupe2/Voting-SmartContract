@@ -20,7 +20,6 @@ contract ElectionFactory is Ownable {
         mapping (uint => Candidate) candidates;
         mapping (address => bool) voters;
         uint[] winners;
-        uint winner;
     }
 
     struct Candidate {

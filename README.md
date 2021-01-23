@@ -42,7 +42,7 @@ truffle test --reset --network kovan
 ```
 ElectionHelper
     function endElection(uint _electionId) external isAdmin(msg.sender) {
-    function getElectionWinner(uint _electionId) external view returns (uint) {
+    function getElectionWinners(uint _electionId) external view returns (uint[] memory) {
 
 CandidateHelper
     function getCandidate(uint _electionId, uint _candidateId) external view returns (string memory, uint, uint) {
@@ -60,4 +60,8 @@ ElectionFactory
 
 VoteHelper
     function voteToElection(uint _electionId, uint[] calldata _notes) external hasNotVoted(_electionId) {
+    function hasAlreadyVoted(uint _electionId) external view returns (bool) {
+
+Ownable
+    address public owner;
 ```

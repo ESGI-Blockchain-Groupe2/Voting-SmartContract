@@ -8,11 +8,14 @@ import "./ElectionFactory.sol";
 
 
 contract ElectionHelper is ElectionFactory, Candidate {
-    // Returns false if tie, else true
-    function endElection(uint _electionId) external isAdmin(msg.sender) returns (bool) {
+    function endElection(uint _electionId) external isAdmin(msg.sender) returns (uint[] memory) {
         elections[_electionId].isOpen = false;
         elections[_electionId].closingDate = block.timestamp;
         return computeResult(_electionId);
+    }
+
+    function getElectionWinners(uint _electionId) external view returns (uint[] memory) {
+        return elections[_electionId].winners;
     }
 
     function getElectionTitle(uint _electionId) public view returns (string memory) {
@@ -21,10 +24,6 @@ contract ElectionHelper is ElectionFactory, Candidate {
 
     function getElectionStatus(uint _electionId) public view returns (bool) {
         return elections[_electionId].isOpen;
-    }
-
-    function getElectionWinner(uint _electionId) external view returns (uint) {
-        return elections[_electionId].winner;
     }
 
     function addVoter(uint _electionId) public {
@@ -40,21 +39,16 @@ contract ElectionHelper is ElectionFactory, Candidate {
         return elections[_electionId].winners;
     }
 
-    // Returns false if tie, else true
-    function computeResult(uint _electionId) public returns (bool) {
+    function computeResult(uint _electionId) public returns (uint[] memory) {
         computeCandidatesAverageNote(_electionId);
 
         computeFirstRoundWinners(_electionId);
 
         computeFinalRoundWinner(_electionId);
-        if(elections[_electionId].winners.length > 1){
+        if(elections[_electionId].winners.length > 1) { // If there is more than one winner
             computeFinalRoundWinner(_electionId);
         }
-        else { // Default case if tie
-            elections[_electionId].winner = elections[_electionId].winners[0];
-            return false;
-        }
-        return true;
+        return elections[_electionId].winners; // Length is >1 if tie, else the winner is at [0]
     }
 
     function computeCandidatesAverageNote(uint _electionId) public {
@@ -83,11 +77,11 @@ contract ElectionHelper is ElectionFactory, Candidate {
             uint currentPercent = elections[_electionId].candidates[elections[_electionId].winners[i]].percent;
             if(i == 0){
                 higherPercent = currentPercent;
-                elections[_electionId].winner = elections[_electionId].winners[i];
+                elections[_electionId].winners[0] = elections[_electionId].winners[i];
             }
             else if (currentPercent > higherPercent){
                 higherPercent = currentPercent;
-                elections[_electionId].winner = elections[_electionId].winners[i];
+                elections[_electionId].winners[0] = elections[_electionId].winners[i];
             }
         }
     }
