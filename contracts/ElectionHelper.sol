@@ -8,7 +8,7 @@ import "./ElectionFactory.sol";
 
 
 contract ElectionHelper is ElectionFactory, Candidate {
-    // Returns True if 1 winner, else False
+    // Returns True if only 1 winner, else False if more than 1
     function endElection(uint _electionId) external isAdmin(msg.sender) returns (bool) {
         elections[_electionId].isOpen = false;
         elections[_electionId].closingDate = block.timestamp;
