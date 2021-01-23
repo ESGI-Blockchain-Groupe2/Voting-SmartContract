@@ -21,8 +21,9 @@ contract TestElectionHelper {
     }
 
     function testEndElection() public {
-        voteContract.endElection(electionId);
+        bool electionStatus = voteContract.endElection(electionId);
         Assert.equal(voteContract.getElectionStatus(electionId), false, "Election should be closed");
+        Assert.equal(electionStatus, false, "Election ending should return false because there is a draw as no one voted");
     }
 
     function testElectionCreation() public {
@@ -157,6 +158,5 @@ contract TestElectionHelper {
         uint[] memory computeWinners = voteContract.computeResult(electionId);
         uint[] memory getWinners = voteContract.getElectionWinners(electionId);
         Assert.equal(computeWinners, getWinners, "Should return the same arrays");
-
     }
 }

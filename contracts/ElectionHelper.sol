@@ -8,10 +8,11 @@ import "./ElectionFactory.sol";
 
 
 contract ElectionHelper is ElectionFactory, Candidate {
-    function endElection(uint _electionId) external isAdmin(msg.sender) returns (uint[] memory) {
+    // Returns True if 1 winner, else False
+    function endElection(uint _electionId) external isAdmin(msg.sender) returns (bool) {
         elections[_electionId].isOpen = false;
         elections[_electionId].closingDate = block.timestamp;
-        return computeResult(_electionId);
+        return computeResult(_electionId).length == 1;
     }
 
     function getElectionWinners(uint _electionId) external view returns (uint[] memory) {
