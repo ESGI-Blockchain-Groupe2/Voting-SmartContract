@@ -9,14 +9,14 @@ import "./ElectionFactory.sol";
 
 contract ElectionHelper is ElectionFactory, Candidate {
     // Returns True if only 1 winner, else False if more than 1
-    function endElection(uint _electionId) external isAdmin(msg.sender) returns (bool) {
+    function endElection(uint _electionId) external isAdmin(msg.sender) {
         elections[_electionId].isOpen = false;
         elections[_electionId].closingDate = block.timestamp;
-        return computeResult(_electionId).length == 1;
+        computeResult(_electionId);
     }
 
     function getElectionWinners(uint _electionId) external view returns (uint[] memory) {
-        return elections[_electionId].winners;
+        return elections[_electionId].winners; // Length is >1 if tie, else the winner is at [0]
     }
 
     function getElectionTitle(uint _electionId) public view returns (string memory) {
@@ -32,15 +32,15 @@ contract ElectionHelper is ElectionFactory, Candidate {
         incrementVoters(_electionId);
     }
 
-    function getOneFirstRoundWinner(uint _electionId, uint _index) public view returns(uint){
+    function getOneFirstRoundWinner(uint _electionId, uint _index) public view returns (uint) {
         return elections[_electionId].winners[_index];
     }
 
-    function getFirstRoundWinners(uint _electionId) public view returns(uint[] memory){
+    function getFirstRoundWinners(uint _electionId) public view returns (uint[] memory) {
         return elections[_electionId].winners;
     }
 
-    function computeResult(uint _electionId) public returns (uint[] memory) {
+    function computeResult(uint _electionId) public {
         computeCandidatesAverageNote(_electionId);
 
         computeFirstRoundWinners(_electionId);
@@ -49,7 +49,6 @@ contract ElectionHelper is ElectionFactory, Candidate {
         if(elections[_electionId].winners.length > 1) { // If there is more than one winner
             computeFinalRoundWinner(_electionId);
         }
-        return elections[_electionId].winners; // Length is >1 if tie, else the winner is at [0]
     }
 
     function computeCandidatesAverageNote(uint _electionId) public {

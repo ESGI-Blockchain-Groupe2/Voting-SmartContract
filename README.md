@@ -41,7 +41,7 @@ truffle test --reset --network kovan
 
 ```
 ElectionHelper
-    function endElection(uint _electionId) external isAdmin(msg.sender) returns (bool) {
+    function endElection(uint _electionId) external isAdmin(msg.sender) {
     function getElectionWinners(uint _electionId) external view returns (uint[] memory) {
 
 CandidateHelper

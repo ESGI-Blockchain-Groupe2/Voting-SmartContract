@@ -21,9 +21,8 @@ contract TestElectionHelper {
     }
 
     function testEndElection() public {
-        bool electionStatus = voteContract.endElection(electionId);
+        voteContract.endElection(electionId);
         Assert.equal(voteContract.getElectionStatus(electionId), false, "Election should be closed");
-        Assert.equal(electionStatus, false, "Election ending should return false because there is a draw as no one voted");
     }
 
     function testElectionCreation() public {
@@ -111,7 +110,8 @@ contract TestElectionHelper {
 
     function testComputeResultWithoutDraw() public {
         initElectionWithVote();
-        uint[] memory winners = voteContract.computeResult(electionId);
+        voteContract.computeResult(electionId);
+        uint[] memory winners = voteContract.getElectionWinners(electionId);
         Assert.equal(uint(winners.length), uint(1), "There should be one winner only");
     }
 
@@ -138,25 +138,23 @@ contract TestElectionHelper {
 
     function testComputeFirstRoundWinnersWithDraw() public {
         initElectionWithVoteDraw();
+
         voteContract.computeCandidatesAverageNote(electionId);
         voteContract.computeFirstRoundWinners(electionId);
         uint[] memory winners = voteContract.getFirstRoundWinners(electionId);
+
         Assert.equal(winners.length, 2, "We should have 2 first round winner");
     }
 
     function testComputeResultWithDraw() public {
         initElectionWithVoteDraw();
-        uint[] memory winners = voteContract.computeResult(electionId);
+
+        voteContract.computeResult(electionId);
+        uint[] memory winners = voteContract.getElectionWinners(electionId);
+
         Assert.equal(uint(winners.length), uint(2), "There should be two winners");
         Assert.equal(winners[0], 0, "The first candidate should be candidate 0");
         Assert.equal(winners[1], 1, "The second candidate should be candidate 1");
 
-    }
-
-    function testGetElectionWinnerReturnsSameAsComputeResult() public {
-        initElectionWithVoteDraw();
-        uint[] memory computeWinners = voteContract.computeResult(electionId);
-        uint[] memory getWinners = voteContract.getElectionWinners(electionId);
-        Assert.equal(computeWinners, getWinners, "Should return the same arrays");
     }
 }
