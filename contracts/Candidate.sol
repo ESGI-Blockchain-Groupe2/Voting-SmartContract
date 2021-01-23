@@ -1,64 +1,53 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >= 0.7.0 < 0.8.0;
+pragma experimental ABIEncoderV2;
 
-contract Candidate {
-    string public name;
-    uint choiceCount;
-    mapping (uint => uint) public notes;
-    uint public percent;
-    uint public averageNote;
+import "./ElectionFactory.sol";
 
-    constructor(string memory _name, uint _choiceCount) {
-        name = _name;
-        choiceCount = _choiceCount;
+
+contract Candidate is ElectionFactory {
+    function addNote(uint _electionId, uint _candidateId, uint _noteId) public {
+        elections[_electionId].candidates[_candidateId].notes[_noteId] ++;
     }
 
-    function setName(string memory _name) public {
-        name = _name;
+    function incrementVoters(uint _electionId) public {
+        elections[_electionId].totalVoters ++;
     }
 
-    function getName() public view returns (string memory) {
-        return name;
+    function getCandidate(uint _electionId, uint _candidateId) external view returns (string memory, uint, uint) {
+        Candidate storage candidate = elections[_electionId].candidates[_candidateId];
+        return (candidate.name, candidate.percent, candidate.averageNote);
     }
 
-    function addNote(uint note) public {
-        notes[note]++;
+    function getCandidatesCount(uint _electionId) external view returns (uint) {
+        return elections[_electionId].candidatesCount;
     }
 
-    function getNote(uint choice) public view returns (uint) {
-        return notes[choice];
+    function getCandidateNote(uint _electionId, uint _candidateId, uint _noteId) public view returns (uint) {
+        return elections[_electionId].candidates[_candidateId].notes[_noteId];
     }
 
-    function getAvgNote() public view returns(uint){
-        return averageNote;
-    }
-
-    function getPercent() public view returns(uint){
-        return percent;
-    }
-
-    function getNumberVoteForNote(uint note) public view returns(uint){
-        return notes[note];
-    }
-
-
-    function calculatePercent(uint totalVoters, uint note) public view returns(uint){
-        uint numberNote = notes[note] * 100;
-        uint newPercent = numberNote / totalVoters;
-        return newPercent;
-    }
-
-    function computeAverageNote(uint totalVoters) public {
+    function calculatePercentageOfNote(uint _electionId, uint _candidateId, uint _note) external view returns(uint){
+        uint note = elections[_electionId].candidates[_candidateId].notes[_note];
+        uint numberNote = note * 100;
+        uint totalVoters = elections[_electionId].totalVoters;
         if (totalVoters == 0) {
-            averageNote = 0;
+            return 0;
+        }
+        return numberNote / totalVoters;
+    }
+
+    function computeAverageNote(uint _electionId, uint _candidateId) public {
+        if (elections[_electionId].totalVoters == 0) {
+            elections[_electionId].candidates[_candidateId].averageNote = 0;
         }
         else {
-          for (uint i = choiceCount - 1; percent <= 50; i--){
-            percent = percent + calculatePercent(totalVoters, i);
-            if(percent >= 50){
-                averageNote = i;
+            for (uint i = 6; elections[_electionId].candidates[_candidateId].percent <= 50; i--){
+                elections[_electionId].candidates[_candidateId].percent = elections[_electionId].candidates[_candidateId].percent + this.calculatePercentageOfNote(_electionId, _candidateId, i);
+                if(elections[_electionId].candidates[_candidateId].percent >= 50){
+                    elections[_electionId].candidates[_candidateId].averageNote = i;
+                }
             }
-          }
         }
     }
 }

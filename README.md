@@ -31,7 +31,37 @@ npm install to install the rest of the dependencies
 
 
 
+## Déploiement
 
 https://medium.com/swlh/develop-test-and-deploy-your-first-ethereum-smart-contract-with-truffle-14e8956d69fc
 truffle migrate --network kovan
 truffle test --reset --network kovan
+
+# Méthodes externes au contrat
+
+```
+ElectionHelper
+    function endElection(uint _electionId) external isAdmin(msg.sender) {
+    function getElectionWinners(uint _electionId) external view returns (uint[] memory) {
+
+CandidateHelper
+    function getCandidate(uint _electionId, uint _candidateId) external view returns (string memory, uint, uint) {
+    function getCandidatesCount(uint _electionId) external view returns (uint) {
+    function calculatePercentageOfNote(uint _electionId, uint _candidateId, uint _note) external view returns(uint){
+
+ElectionFactory
+    function addAdmin(address _userAddress) external isAdmin(msg.sender) {
+    function deleteAdmin(address _userAddress) external isAdmin(msg.sender) {
+    function isUserAdmin(address userAddress) external view returns(bool){
+    function getElectionsCount() external view returns (uint) {
+    function createElection(string memory _title, string[] memory _candidatesNames) external isAdmin(msg.sender) returns (uint) {
+    mapping (uint => Election) public elections;
+    uint public electionsCount;
+
+VoteHelper
+    function voteToElection(uint _electionId, uint[] calldata _notes) external hasNotVoted(_electionId) {
+    function hasAlreadyVoted(uint _electionId) external view returns (bool) {
+
+Ownable
+    address public owner;
+```
