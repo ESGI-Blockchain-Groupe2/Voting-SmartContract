@@ -31,8 +31,6 @@ contract ElectionFactory is Ownable {
     uint public electionsCount;
     mapping (uint => Election) public elections;
 
-    mapping (uint => address) electionToOwner;
-    mapping (address => uint) ownerElectionCount;
     mapping (address => bool) listAdmin;
 
     modifier isAdmin(address _userAddress) {

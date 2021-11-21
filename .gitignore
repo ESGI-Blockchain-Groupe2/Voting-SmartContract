@@ -233,4 +233,6 @@ dist
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
 
+truffle-config.js
+
 # End of https://www.toptal.com/developers/gitignore/api/solidity,intellij,git
